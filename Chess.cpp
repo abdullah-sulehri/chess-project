@@ -15,6 +15,7 @@ int player=1;
 int main()
 {
 
+	//initialize board
 	initialize();
 	displayBoard();
 	//move('');
