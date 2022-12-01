@@ -10,7 +10,7 @@ void rowAddress();
 void columnAddress();
 void displayBoard();
 void move(char[],char[]);
-
+int destCheck(char, char);
 int player=1;
 int main()
 {
@@ -56,7 +56,7 @@ void initialize(){
 	}
 void rowAddress()
 {
-	cout<<(char)201;
+	cout<<"    "<<(char)201;
 	for(int i=1;i<=23;i++)
 	{
 		cout<<(char)205;
@@ -67,12 +67,12 @@ void rowAddress()
 		
 	}
 	cout<<(char)205<<(char)187;
-	cout<<endl;
+	cout<<endl<<"    ";
 	for(int i=97;i<=104;i++)
 	{
 		cout<<(char)186<<" "<<(char)i<<" ";
 	}
-	cout<<(char)186<<endl;
+	cout<<(char)186<<endl<<"    ";
 	cout<<(char)200;
 	for(int i=1;i<=23;i++)
 	{
@@ -90,7 +90,7 @@ void displayBoard(){
 	system("cls");
 	rowAddress();
 	//firstline
-	cout<<(char)201;
+	cout<<"    "<<(char)201;
 	for(int i=1;i<=23;i++)
 	{
 		cout<<(char)205;
@@ -100,15 +100,16 @@ void displayBoard(){
 		}
     }
     cout<<(char)205<<(char)187;
-	cout<<endl;
+	cout<<endl<<"  ";
 	//data line
 	for (int i=0;i<8;i++)
 	{
+		cout<<8-i<<" ";
 		for (int j=0;j<8;j++)
 		{
 		cout<<(char)186<<" "<<board[i][j]<<" ";
 		}
-		cout<<(char)186<<endl;
+		cout<<(char)186<<endl<<"    ";
 		
 		//sperator
 		if(i<7){
@@ -123,7 +124,7 @@ void displayBoard(){
 				else
 				cout<<(char)185;
 			}
-			cout<<endl;
+			cout<<endl<<"  ";
 		}
 	 } 
 	 //last line
@@ -173,10 +174,11 @@ void move(char sa[2], char da[2])
 	gets(sa);
 	
 	//Pawn Move
-		if((board[srow][scol]=='P' && drow<srow && player==1) || (board[srow][scol]=='p' && srow<drow && player==2))
+		if(((board[srow][scol]=='P' && drow<srow && player==1) || (board[srow][scol]=='p' && srow<drow && player==2))
+		  &&	destCheck(board[srow][scol],board[drow][dcol]))
 		{
 	
-				if((srow==6 || srow==1) && rowDiff<=2)
+				if((srow==6 || srow==1) && rowDiff<=2 )
 				{
 					board[drow][dcol]=board[srow][scol];
 					board[srow][scol]=' ';
@@ -191,7 +193,7 @@ void move(char sa[2], char da[2])
 				}			
 		} 
 		//Knight move
-		if(board[srow][scol]=='N'  && player==1 || board[srow][scol]=='n'  && player==2)
+	    else if(board[srow][scol]=='N'  && player==1 || board[srow][scol]=='n'  && player==2)
 		{
 			if (rowDiff==2 && colDiff==1)
 			{
@@ -205,18 +207,19 @@ void move(char sa[2], char da[2])
 				return;
 			}
 		}
-		if (board[srow][scol]=='R' && player==1 || board[srow][scol]=='r' && player==2)
+	    else	if (board[srow][scol]=='R' && player==1 || board[srow][scol]=='r' && player==2)
 		{
 			
 			int checkrow=1,checkcol=1;
 			for(int i=srow+1;i<=drow;i++)
 			{
-				if(board[i][scol]==' ')
+				if(board[i][scol]==' ' )
 				{
 					checkrow=1;
 				}
 				else{
 					checkrow=0;
+					break;
 				}
 			}
 			for(int j=scol+1;j<=dcol;j++)
@@ -227,6 +230,7 @@ void move(char sa[2], char da[2])
 				}
 				else{
 					checkcol=0;
+					break;
 				}
 			}
 			if(checkrow==1 && checkcol==1)
@@ -240,13 +244,14 @@ void move(char sa[2], char da[2])
 				getche();
 				return;
 			}
+			
 		}
-		//else
-		//{
-		//cout<<"Invalid Move "; 
-		//getche();
-		//return;	
-		//}
+		else
+		{
+		cout<<"Invalid Move "; 
+		getche();
+		return;	
+		}
 		
 		
 
@@ -257,4 +262,16 @@ void move(char sa[2], char da[2])
 		player=1;
 	
 	 
+}
+
+int destCheck(char source, char destination){
+	if(destination==' '){
+		return 1;
+	}
+	int diff = abs((int)source - int(destination));
+	if(diff==32)
+		return 1;
+	else
+		return 0;
+	
 }
