@@ -240,8 +240,10 @@ void move(char sa[2], char da[2])
 					}
 				}
 			}
-			for(int j=scol+1;j<=dcol;j++)
+			if (dcol>scol)
 			{
+				for(int j=scol+1;j<=dcol;j++)
+				{
 				if(board[srow][j]==' ')
 				{
 					checkcol=1;
@@ -249,6 +251,21 @@ void move(char sa[2], char da[2])
 				else{
 					checkcol=0;
 					break;
+				}
+			}
+		}
+		else
+		{
+				for(int i=scol-1;i>=dcol;i--)
+				{
+					if(board[i][scol]==' ' )
+					{
+						checkrow=1;
+					}
+					else{
+						checkrow=0;
+						break;
+					}
 				}
 			}
 			if(checkrow==1 && checkcol==1)
@@ -287,7 +304,7 @@ int destCheck(char source, char destination){
 		return 1;
 	}
 	int diff = abs((int)source - int(destination));
-	if(diff==32)
+	if(diff>=32)
 		return 1;
 	else
 		return 0;
