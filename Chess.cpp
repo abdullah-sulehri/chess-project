@@ -386,7 +386,7 @@ void move(char sa[2], char da[2])
 					 }
 				 } 
 			 }
-			 if (qcastle==1)
+			  if (qcastle==1)
 			 {
 			 	board[drow][dcol]=board[srow][scol];
 			 	board[drow][scol-1]=board[drow][0];
@@ -400,6 +400,14 @@ void move(char sa[2], char da[2])
 			 	board[srow][scol]=' ';
 			 	board[drow][7]=' ';
 			 }
+			 else if(rowDiff==1||colDiff==1)
+			{
+				if (board[drow][dcol]==' ')
+			{
+				board[drow][dcol]=board[srow][scol];
+			    board[srow][scol]=' ';
+				}
+			}
 		}
 			 //castling player 2
 			 if(player==2)
@@ -418,7 +426,7 @@ void move(char sa[2], char da[2])
 					 }
 				 }
 			 }
-			 else if(colDiff=1 && srow==7 && dcol==6 && board[srow][7]=='r')
+			 else if(colDiff=1 && srow==0 && dcol==6 && board[srow][7]=='r')
 			 {
 			 	for(int i=scol+1;i<dcol;i++)
 			 	{
@@ -433,6 +441,28 @@ void move(char sa[2], char da[2])
 				 }
 				 
 			 }
+			  if (qcastle==1)
+			 {
+			 	board[drow][dcol]=board[srow][scol];
+			 	board[drow][scol-1]=board[drow][0];
+			 	board[srow][scol]=' ';
+			 	board[drow][0]=' ';
+			 }
+			 else if(kcastle==1)
+			 {
+			 	board[drow][dcol]=board[srow][scol];
+			 	board[drow][scol+1]=board[drow][7];
+			 	board[srow][scol]=' ';
+			 	board[drow][7]=' ';
+			 }
+			 else if(rowDiff==1||colDiff==1)
+			{
+				if (board[drow][dcol]==' ')
+			{
+				board[drow][dcol]=board[srow][scol];
+			    board[srow][scol]=' ';
+				}
+			}
 		}
 			
 		}
