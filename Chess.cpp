@@ -303,9 +303,11 @@ int destCheck(char source, char destination){
 	if(destination==' '){
 		return 1;
 	}
-	int diff = abs((int)source - (int)destination);
-	cout<<"dest check diff "<< diff <<endl;
-	if(diff>=32)
+	int sourceAscii= (int)source;
+	int desAscii = (int)destination;
+	
+	if((sourceAscii>=65 && sourceAscii<=90 && desAscii>=97 && desAscii<=122) ||
+		(desAscii>=65 && desAscii<=90 && sourceAscii>=97 && sourceAscii<=122) )
 		return 1;
 	else
 		return 0;
