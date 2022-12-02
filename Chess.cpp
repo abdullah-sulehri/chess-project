@@ -216,7 +216,7 @@ void move(char sa[2], char da[2])
 			
 			if(drow>srow){
 		
-				for(int i=srow+1;i<=drow;i++)
+				for(int i=srow+1;i<drow;i++)
 				{
 					if(board[i][scol]==' ' )
 					{
@@ -228,7 +228,7 @@ void move(char sa[2], char da[2])
 					}
 				}
 			}else{
-				for(int i=srow-1;i>=drow;i--)
+				for(int i=srow-1;i>drow;i--)
 				{
 					if(board[i][scol]==' ' )
 					{
@@ -240,9 +240,9 @@ void move(char sa[2], char da[2])
 					}
 				}
 			}
-			if (dcol>scol)
+		if (dcol>scol)
 			{
-				for(int j=scol+1;j<=dcol;j++)
+				for(int j=scol+1;j<dcol;j++)
 				{
 				if(board[srow][j]==' ')
 				{
@@ -256,14 +256,14 @@ void move(char sa[2], char da[2])
 		}
 		else
 		{
-				for(int i=scol-1;i>=dcol;i--)
+				for(int i=scol-1;i>dcol;i--)
 				{
-					if(board[i][scol]==' ' )
+					if(board[srow][i]==' ' )
 					{
-						checkrow=1;
+						checkcol=1;
 					}
 					else{
-						checkrow=0;
+						checkcol=0;
 						break;
 					}
 				}
@@ -303,7 +303,8 @@ int destCheck(char source, char destination){
 	if(destination==' '){
 		return 1;
 	}
-	int diff = abs((int)source - int(destination));
+	int diff = abs((int)source - (int)destination);
+	cout<<"dest check diff "<< diff <<endl;
 	if(diff>=32)
 		return 1;
 	else
