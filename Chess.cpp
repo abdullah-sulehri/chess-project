@@ -193,7 +193,8 @@ void move(char sa[2], char da[2])
 				}			
 		} 
 		//Knight move
-	    else if(board[srow][scol]=='N'  && player==1 || board[srow][scol]=='n'  && player==2)
+	    else if( (board[srow][scol]=='N'  && player==1 || board[srow][scol]=='n'  && player==2)
+	    	&&	destCheck(board[srow][scol],board[drow][dcol]))
 		{
 			if (rowDiff==2 && colDiff==1)
 			{
@@ -207,19 +208,36 @@ void move(char sa[2], char da[2])
 				return;
 			}
 		}
-	    else	if (board[srow][scol]=='R' && player==1 || board[srow][scol]=='r' && player==2)
+	    else if ( (board[srow][scol]=='R' && player==1 || board[srow][scol]=='r' && player==2)
+	    	&&	destCheck(board[srow][scol],board[drow][dcol]))
 		{
 			
 			int checkrow=1,checkcol=1;
-			for(int i=srow+1;i<=drow;i++)
-			{
-				if(board[i][scol]==' ' )
+			
+			if(drow>srow){
+		
+				for(int i=srow+1;i<=drow;i++)
 				{
-					checkrow=1;
+					if(board[i][scol]==' ' )
+					{
+						checkrow=1;
+					}
+					else{
+						checkrow=0;
+						break;
+					}
 				}
-				else{
-					checkrow=0;
-					break;
+			}else{
+				for(int i=srow-1;i>=drow;i--)
+				{
+					if(board[i][scol]==' ' )
+					{
+						checkrow=1;
+					}
+					else{
+						checkrow=0;
+						break;
+					}
 				}
 			}
 			for(int j=scol+1;j<=dcol;j++)
