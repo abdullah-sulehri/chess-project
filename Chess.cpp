@@ -177,21 +177,80 @@ void move(char sa[2], char da[2])
 		if(((board[srow][scol]=='P' && drow<srow && player==1) || (board[srow][scol]=='p' && srow<drow && player==2))
 		  &&	destCheck(board[srow][scol],board[drow][dcol]))
 		{
-	
-				if((srow==6 || srow==1) && rowDiff<=2 )
+				if((srow==6 || srow==1) && rowDiff<=2 && colDiff==0 && board[drow][dcol]==' ')
 				{
 					board[drow][dcol]=board[srow][scol];
 					board[srow][scol]=' ';
-				}else if(rowDiff==1)
+				}else if(rowDiff==1 && colDiff==0 && board[drow][dcol]==' ')
 				{
 					board[drow][dcol]=board[srow][scol];
 					board[srow][scol]=' ';
+				}
+				else if(rowDiff==1 && colDiff==1 && board[drow][dcol]!=' ')
+				{
+					board[drow][dcol]=board[srow][scol];
+					board[srow][scol]=' ';
+				
 				}else
 				{
 					cout<<"Invalid Move "; getche();
 					return;	
-				}			
-		} 
+				}	//Pawn Promotion		
+				if(player==1)
+				{
+				for(int i=0;i<8;i++)
+				{
+					if(board[0][i]=='P')
+					{
+						cout<<"PAWN PROMOTION "<<endl;
+						cout<<"Enter Q to make Queen "<<endl;
+						cout<<"Enter K to make king "<<endl;
+						cout<<"Enter R to make Rook "<<endl;
+						cout<<"Enter N to make Knight "<<endl;
+						char ch;
+						cin>>ch;
+						if (ch=='Q' || ch=='K'|| ch=='N' || ch=='R')
+						{
+							board[0][i]=ch;
+							break;
+						}
+						else
+						{
+							cout<<"Please Enter the Correct character ";
+							i--;
+						}
+					}
+				}
+			}
+				if(player==2)
+				{
+					for(int i=0;i<8;i++)
+				{
+					if(board[7][i]=='p')
+					{
+						cout<<"PAWN PROMOTION "<<endl;
+						cout<<"Enter q to make Queen "<<endl;
+						cout<<"Enter k to make king "<<endl;
+						cout<<"Enter r to make Rook "<<endl;
+						cout<<"Enter n to make Knight "<<endl;
+						char ch;
+						cin>> ch;
+						if (ch=='q' || ch=='k'|| ch=='n' || ch=='r')
+						{
+							board[7][i]=ch;
+							break;
+						}
+						else{
+							cout<<"Please Enter The Correct Character ";
+							i--;
+						}
+						
+					}
+				}
+			}
+					
+				
+			} 
 		//Knight move
 	    else if( (board[srow][scol]=='N'  && player==1 || board[srow][scol]=='n'  && player==2)
 	    	&&	destCheck(board[srow][scol],board[drow][dcol]))
@@ -281,6 +340,22 @@ void move(char sa[2], char da[2])
 			}
 			
 		}
+	//	else if ((board[srow][scol]=='B' && player==1 || board[srow][scol]=='b') 
+	//	&& destCheck(board[srow][scol],board[drow][dcol]))
+	//	{
+	//		if(rowDiff>=1 && colDiff>=1)
+	//		{			
+	//		int checkrow=1;
+	//		if(drow>srow){
+	//		for(int i=srow+1;i<drow;i++)
+	//		{
+	//			if(board[i][scol]=='')
+	//		}
+	//		}
+			
+		
+	
+	
 		else
 		{
 		cout<<"Invalid Move "; 
