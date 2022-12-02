@@ -340,6 +340,102 @@ void move(char sa[2], char da[2])
 			}
 			
 		}
+		//king move
+		else if ((board[srow][scol]=='K' && player==1 || board[srow][scol]=='k' && player==2) &&	destCheck(board[srow][scol],board[drow][dcol]))
+		{
+			int qcastle=0;
+			int kcastle=0;
+			//if(rowDiff==1||colDiff==1)
+			//{
+			//	if (board[drow][dcol]==' ' && board[7][])
+			//	{
+			//		board[drow][dcol]=board[srow][scol];
+			//	    board[srow][scol]=' ';
+			//	}
+			
+			//castling Player 1
+			if(player==1){
+			
+			 if (colDiff==2 && srow==7 && dcol==2 && board[srow][0]=='R')
+			 {
+			 	for(int i=1;i<scol;i++)
+			 	{
+			 		if(board[srow][i]==' ')
+			 		{
+			 			qcastle=1;
+					 }
+					 else
+					 {
+					 	qcastle=0;
+					 	break;
+					 }
+				
+				 }
+			 }
+			 else if(colDiff==1 && srow==7 && dcol==6 && board[srow][7]=='R')
+			 {
+			 	for(int i=scol+1;i<7;i++)
+			 	{
+			 		if(board[srow][i]==' ')
+			 		{
+			 			kcastle=1;
+					 }
+					 else{
+					 	kcastle=0;
+					 	break;
+					 }
+				 } 
+			 }
+			 if (qcastle==1)
+			 {
+			 	board[drow][dcol]=board[srow][scol];
+			 	board[drow][scol-1]=board[drow][0];
+			 	board[srow][scol]=' ';
+			 	board[drow][0]=' ';
+			 }
+			 else if(kcastle==1)
+			 {
+			 	board[drow][dcol]=board[srow][scol];
+			 	board[drow][scol+1]=board[drow][7];
+			 	board[srow][scol]=' ';
+			 	board[drow][7]=' ';
+			 }
+		}
+			 //castling player 2
+			 if(player==2)
+			 {
+			 if (colDiff==2 && srow==0 && dcol==2 && board[srow][0]=='r')
+			 {
+			 	for(int i=1;i<scol;i++)
+			 	{
+			 		if(board[srow][i]==' ')
+			 		{
+			 			qcastle=1;
+					 }
+					 else{
+					 	qcastle=0;
+					 	break;
+					 }
+				 }
+			 }
+			 else if(colDiff=1 && srow==7 && dcol==6 && board[srow][7]=='r')
+			 {
+			 	for(int i=scol+1;i<dcol;i++)
+			 	{
+			 		if(board[srow][i]==' ')
+			 		{
+			 			kcastle=1;
+					 }
+					 else{
+					 	kcastle=0;
+					 	break;
+					 }
+				 }
+				 
+			 }
+		}
+			
+		}
 	//	else if ((board[srow][scol]=='B' && player==1 || board[srow][scol]=='b') 
 	//	&& destCheck(board[srow][scol],board[drow][dcol]))
 	//	{
