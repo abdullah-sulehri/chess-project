@@ -23,7 +23,8 @@ void errorMessage();
 int player1Seconds=30;
 int player2Seconds=10*60;
 long chessTimer=0;
-void errorMessage(){
+void errorMessage()
+{
 	cout<<"Invalid Move, press any key to continue..."<<endl;
 	getche();
 }
@@ -43,10 +44,16 @@ int moveInput()
 	cout<<endl;
 	char moveChars[5];
 	string moveString;
-	cout<<"Enter move or write END to end game : ";
+	cout<<"Enter your move or write END to end game : ";
 	gets(moveChars);
 	if(strlen(moveChars)>=3 && strcmp(moveChars,"END")==0)
 	{
+		if (player==1){
+			cout<<"Player 1 Resigned"<<endl<<"Player 2 won the game "<<endl;
+		}
+		else{
+			cout<<"Player 2 Resigned"<<endl<<"Player 1 won the game "<<endl;
+		}
 		gameFile.close();
 		return 0;
 	}
