@@ -1,4 +1,5 @@
 #include<iostream>
+#include<fstream>
 #include<cstring>
 #include<stdio.h>
 #include<conio.h>
@@ -8,19 +9,65 @@ char board[8][8];
 void initialize();
 void rowAddress();
 void columnAddress();
-void displayBoard();
-void move(char[],char[]);
+void printBoard();
+void move(string);
 int destCheck(char, char);
+void startGame();
+void loadGame();
+void createNewFile();
 int player=1;
+void moveInput();
+fstream gameFile;
+char gameType;
+int validInput(char[]);
+int player1Minutes=10;
+int player2Minutes=10;
 int main()
 {
-
-	//initialize board
-	initialize();
-	displayBoard();
-	//move('');
+	//initialize();
 	//displayBoard();
+	startGame();
 	
+}
+void startGame(){
+	char game;
+	cout<<"Enter Game type : ";
+	cin>>gameType;
+	cout<<"Enter N for new game and L to load existing game : ";
+	cin>>game;
+	if(game=='N'){
+		createNewFile();
+		initialize();
+		printBoard();
+		moveInput();
+	}
+	else if (game=='L'){
+		initialize();
+		loadGame();
+		printBoard();
+		moveInput();
+	}
+}
+void loadGame(){
+	string moveString;
+	gameFile.open("chess-game.txt",ios::in);
+	player=1;
+	char ch=' ';
+	while (getline (gameFile, moveString)) {
+  		move(moveString); 
+  		printBoard();
+  		if(ch==' '){
+  		  	cout<<"Press space to continue, any other key to jump to last move";
+  			ch=getche();	
+		}
+  	}
+	gameFile.close();
+	gameFile.open("chess-game.txt",ios::app);
+}
+void createNewFile(){
+
+	gameFile.open("chess-game.txt",ios::out);
+
 }
 void initialize(){
 	board[0][0]='r';
@@ -86,7 +133,7 @@ void rowAddress()
 	cout<<endl;
 	
 }
-void displayBoard(){
+void printBoard(){
 	system("cls");
 	rowAddress();
 	//firstline
@@ -139,39 +186,33 @@ void displayBoard(){
     }
     cout<<(char)205<<(char)188;
 	cout<<endl;
-	cout<<"Player "<< player<<" move"<<endl;
-	char saddress[2],daddress[2];
-	cout<<"Enter source address : ";
-	gets(saddress);
-	cout<<"Enter destination address: ";
-	gets(daddress);
-	
-	move(saddress,daddress);
-	//if(winCondition)
-	// {displayWinBoard(); return; }
-	//else displayBoard();
 
-	displayBoard();
-	
-	
 }
 
-void move(char sa[2], char da[2])
+void move(string moveString)
 {
 	//cout<<sa<<": "<<da;
 	
-	int scol=   (int)sa[0] - 97;
-	int srow = 8 - ((int)sa[1] - 48);
+	int scol=   (int)moveString.at(0) - 97;
+	int srow = 8 - ((int)moveString.at(1) - 48);
 	
-	int dcol= (int)da[0] - 97;
-	int drow= 8 - ((int)da[1] - 48);
+	int dcol= (int)moveString.at(3) - 97;
+	int drow= 8 - ((int)moveString.at(4) - 48);
+	//cout<<scol<<", "<<srow<<", "<<dcol<<", "<<drow<<endl;
+	
+	if( scol>7 || dcol>7 || scol<0 || dcol<0 || drow<0 || drow>7 || srow<0 || srow>7 ){
+		cout<<"Move is outside the board, select correct move, press any key to continue... ";
+		getche();
+		return;
+			
+	}
 	int rowDiff;
 	int colDiff;
 	colDiff=abs(scol-dcol);
 	rowDiff=abs(srow-drow);
 
 	//cout<<colDiff<<", "<<rowDiff;
-	gets(sa);
+	//getche();
 	
 	//Pawn Move
 		if(((board[srow][scol]=='P' && drow<srow && player==1) || (board[srow][scol]=='p' && srow<drow && player==2))
@@ -488,16 +529,12 @@ void move(char sa[2], char da[2])
 		getche();
 		return;	
 		}
-		
-		
-
 	
 	if(player==1)
 		player=2;
 	else
 		player=1;
-	
-	 
+
 }
 
 int destCheck(char source, char destination){
@@ -514,3 +551,28 @@ int destCheck(char source, char destination){
 		return 0;
 	
 }
+
+void moveInput(){
+	cout<<"Player "<< player<<" move"<<endl;
+	char saddress[2],daddress[2];
+	char moveChars[5];
+	string moveString;
+	cout<<"Enter move or write END to end game : ";
+	gets(moveChars);
+	if(strlen(moveChars)>=3 && strcmp(moveChars,"END")==0){
+		gameFile.close();
+		return;
+	}
+	else if(strlen(moveChars)==5) {
+		move(moveChars);
+		gameFile<<(moveChars)<<endl;
+		printBoard();
+		moveInput();
+	}else{
+		cout<<"invalid Input";
+		getche();
+		printBoard();
+		moveInput();
+	}
+}
+
