@@ -20,6 +20,7 @@ void moveInput();
 fstream gameFile;
 char gameType;
 int validInput(char[]);
+void errorMessage();
 int player1Minutes=10;
 int player2Minutes=10;
 int main()
@@ -179,7 +180,7 @@ void printBoard(){
 		}
 	 } 
 	 //last line
-	 	cout<<(char)200;
+ 	cout<<(char)200;
 	for(int i=1;i<=23;i++)
 	{
 		cout<<(char)205;
@@ -240,7 +241,7 @@ void move(string moveString)
 				}
 				else
 				{
-					cout<<"Invalid Move "; getche();
+					errorMessage();
 					return;	
 				}	//Pawn Promotion		
 				if(player==1)
@@ -308,8 +309,7 @@ void move(string moveString)
 			}
 			else 
 			{
-				cout<<"Invalid Move ";
-				getche();
+				errorMessage();
 				return;
 			}
 		}
@@ -333,7 +333,9 @@ void move(string moveString)
 						break;
 					}
 				}
-			}else{
+			}
+			else
+			{
 				for(int i=srow-1;i>drow;i--)
 				{
 					if(board[i][scol]==' ' )
@@ -354,7 +356,8 @@ void move(string moveString)
 				{
 					checkcol=1;
 				}
-				else{
+				else
+				{
 					checkcol=0;
 					break;
 				}
@@ -368,7 +371,8 @@ void move(string moveString)
 					{
 						checkcol=1;
 					}
-					else{
+					else
+					{
 						checkcol=0;
 						break;
 					}
@@ -381,8 +385,7 @@ void move(string moveString)
 			}
 			else
 			{
-				cout<<"Invalid Move ";
-				getche();
+				errorMessage();
 				return;
 			}
 			
@@ -395,7 +398,7 @@ void move(string moveString)
 			if(rowDiff>1 || colDiff>1)
 			{
 					
-			 if (colDiff==2 && drow==7 && dcol==2 && board[srow][0]=='R' && board[7][1]==' ' && board[7][2]==' ' && board[7][3]==' ')
+			if (colDiff==2 && drow==7 && dcol==2 && board[srow][0]=='R' && board[7][1]==' ' && board[7][2]==' ' && board[7][3]==' ')
 			 {
 				board[drow][dcol]=board[srow][scol];
 			 	board[drow][3]=board[drow][0];
@@ -411,8 +414,7 @@ void move(string moveString)
 			 }
 			 	else 
 				{
-				cout<<"Invalid Move ";
-				getche();
+				errorMessage();
 				return;	
 				}
 		}
@@ -425,8 +427,7 @@ void move(string moveString)
 				}
 				else 
 				{
-				cout<<"Invalid Move ";
-				getche();
+				errorMessage();
 				return;	
 				}
 			}
@@ -453,8 +454,7 @@ void move(string moveString)
 			 		}
 			 			else 
 				{
-				cout<<"Invalid Move ";
-				getche();
+				errorMessage();
 				return;	
 				}
 			 	}
@@ -467,34 +467,66 @@ void move(string moveString)
 					}
 					else 
 					{
-						cout<<"Invalid Move ";
-						getche();
+						errorMessage();
 						return;	
 					}
 				}
 			}
 		}
-	
-	//	else if ((board[srow][scol]=='B' && player==1 || board[srow][scol]=='b') 
-	//	&& destCheck(board[srow][scol],board[drow][dcol]))
-	//	{
-	//		if(rowDiff>=1 && colDiff>=1)
-	//		{			
-	//		int checkrow=1;
-	//		if(drow>srow){
-	//		for(int i=srow+1;i<drow;i++)
-	//		{
-	//			if(board[i][scol]=='')
-	//		}
-	//		}
+		else if ((board[srow][scol]=='B' && player==1) || (board[srow][scol]=='b' && player==2) 
+			&& destCheck(board[srow][scol],board[drow][dcol]))
+		{
+			if(rowDiff!=colDiff)
+			{
+				errorMessage();
+				return;
+			}
+			int rowStep,  colStep;
+			if(srow<drow)
+			{
+				rowStep=1;
+			}
+			else
+			{
+				rowStep=-1;	
+			}
+			if(scol<dcol){
+				colStep=1;
+			}
+			else
+			{
+				colStep=-1;
+			}
+			int j=scol+colStep, checkDiag=1;
 			
-		
-	
-	
+			for(int i=srow+rowStep;i!=drow;i+=rowStep){
+				//cout<<i<<", "<<j<<endl;
+				if(board[i][j]==' ')
+				{
+					checkDiag=1;
+				}
+				else
+				{
+					checkDiag=0;
+					break;
+				}
+				j+=colStep;
+			}
+			if(checkDiag==1)
+			{
+				board[drow][dcol]=board[srow][scol];
+				board[srow][scol]=' ';
+			}
+			else
+			{
+				errorMessage();
+				return;
+			}
+			
+		}
 		else
 		{
-		cout<<"Invalid Move "; 
-		getche();
+		errorMessage();
 		return;	
 		}
 	
@@ -548,5 +580,10 @@ void moveInput()
 		printBoard();
 		moveInput();
 	}
+}
+
+void errorMessage(){
+	cout<<"Invalid Move, press any key to continue..."<<endl;
+	getche();
 }
 
