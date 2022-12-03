@@ -23,6 +23,63 @@ void errorMessage();
 int player1Seconds=30;
 int player2Seconds=10*60;
 long chessTimer=0;
+void errorMessage(){
+	cout<<"Invalid Move, press any key to continue..."<<endl;
+	getche();
+}
+int moveInput()
+{
+	cout<<"Player "<< player<<" move";
+	if(gameType=='R' || gameType=='r'){
+		cout<<", seconds remaining : ";
+		if(player==1){
+			cout<<player1Seconds;
+		}else
+		{
+			cout<<player2Seconds;
+		}
+	}
+
+	cout<<endl;
+	char moveChars[5];
+	string moveString;
+	cout<<"Enter move or write END to end game : ";
+	gets(moveChars);
+	if(strlen(moveChars)>=3 && strcmp(moveChars,"END")==0)
+	{
+		gameFile.close();
+		return 0;
+	}
+	else if(strlen(moveChars)==5) 
+	{
+		int c=move(moveChars);
+		gameFile<<(moveChars)<<endl;
+		return c;	
+	}
+	else
+	{
+		cout<<"invalid Input";
+		getche();
+		return 1;		
+	}
+}
+int destCheck(char source, char destination)
+{
+	if(destination==' ')
+	{
+		return 1;
+	}
+	int sourceAscii= (int)source;
+	int desAscii = (int)destination;
+	
+	if((sourceAscii>=65 && sourceAscii<=90 && desAscii>=97 && desAscii<=122) ||
+		(desAscii>=65 && desAscii<=90 && sourceAscii>=97 && sourceAscii<=122) )
+		return 1;
+	else
+		return 0;
+	
+}
+
 int main()
 {
 	char game;
@@ -31,19 +88,17 @@ int main()
 	cout<<"Enter N for new game and L to load existing game : ";
 	cin>>game;
 	cout<<endl;
-	if(game=='N'){
+	if(game=='N' || game=='n')
+	{
 		gameFile.open("chess-game.txt",ios::out);
 		chessTimer=time(0);
 		initialize();
-//		printBoard();
-//		moveInput();
-		startGame();
-		
+		startGame();	
 	}
-	else if (game=='L'){
+	else if (game=='L' || game=='l')
+	{
 		initialize();
 		loadGame();
-//		moveInput();
 		startGame();
 	}
 //	else 
@@ -53,32 +108,6 @@ int main()
 //	}
 	
 }
-void startGame(){
-	int cont=1;
-	do{
-		printBoard();
-		cont=moveInput();
-	}while(cont==1);
-}
-void loadGame(){
-	string moveString;
-	gameFile.open("chess-game.txt",ios::in);
-	player=1;
-	char ch=' ';
-	//getline reads one line from gameFile and put it in moveString var
-	//returns 0 if there is no more line to read
-	while (getline (gameFile, moveString)) {
-  		move(moveString); 
-  		printBoard();
-  		if(ch==' '){
-  		  	cout<<"Press space to continue, any other key to jump to last move";
-  			ch=getche();	
-		}
-  	}
-	gameFile.close();
-	gameFile.open("chess-game.txt",ios::app);
-}
-
 void initialize(){
 	board[0][0]='r';
 	board[0][1]='n';
@@ -111,7 +140,37 @@ void initialize(){
 	board[7][6]='N';
 	board[7][7]='R';
 	}
-void rowAddress()
+void loadGame(){
+	string moveString;
+	gameFile.open("chess-game.txt",ios::in);
+	player=1;
+	char ch=' ';
+	//getline reads one line from gameFile and put it in moveString var
+	//returns 0 if there is no more line to read
+	while (getline (gameFile, moveString)) {
+  		move(moveString); 
+  		printBoard();
+  		if(ch==' '){
+  		  	cout<<"Press space to continue, any other key to jump to last move";
+  			ch=getche();	
+		}
+  	}
+	gameFile.close();
+	gameFile.open("chess-game.txt",ios::app);
+}
+void startGame()
+{
+	int cont=1;
+	do
+	{
+		printBoard();
+		cont=moveInput();
+	}
+	while(cont==1);
+}
+
+
+void rowAddress() //prints a,b,c row
 {
 	cout<<"    "<<(char)201;
 	for(int i=1;i<=23;i++)
@@ -210,11 +269,11 @@ int move(string moveString)
 	int drow= 8 - ((int)moveString.at(4) - 48);
 	//cout<<scol<<", "<<srow<<", "<<dcol<<", "<<drow<<endl;
 	
-	if( scol>7 || dcol>7 || scol<0 || dcol<0 || drow<0 || drow>7 || srow<0 || srow>7 ){
+	if( scol>7 || dcol>7 || scol<0 || dcol<0 || drow<0 || drow>7 || srow<0 || srow>7 )
+	{
 		cout<<"Move is outside the board, select correct move, press any key to continue... ";
 		getche();
 		return 1;
-			
 	}
 	int rowDiff;
 	int colDiff;
@@ -495,7 +554,8 @@ int move(string moveString)
 			{
 				rowStep=-1;	
 			}
-			if(scol<dcol){
+			if(scol<dcol)
+			{
 				colStep=1;
 			}
 			else
@@ -527,6 +587,156 @@ int move(string moveString)
 				errorMessage();
 				return 1;
 			}
+		}
+		//queen move
+		else if((board[srow][scol]=='Q' && player==1 || board[srow][scol]=='q') && destCheck(board[srow][scol],board[drow][dcol]))
+		{
+			if (rowDiff==0)
+			{
+				int checkrow=1;
+				if(drow>srow)
+				{
+					for(int i=srow+1;i<drow;i++)
+					{
+						if(board[i][scol]==' ' )
+						{
+							checkrow=1;
+						}
+						else
+						{
+							checkrow=0;
+							break;
+						}
+					}
+				}		
+				else
+				{
+					for(int i=srow-1;i>drow;i--)
+					{
+						if(board[i][scol]==' ' )
+						{
+							checkrow=1;
+						}
+						else
+						{
+							checkrow=0;
+							break;
+						}
+					}
+				}
+				if(checkrow==1)
+				{
+					board[drow][dcol]=board[srow][scol];
+					board[srow][scol]=' ';
+				}
+				else
+				{
+					errorMessage();
+					return 1;
+				}
+			}
+			else if(colDiff==0)
+			{
+				int checkcol=1;
+				if (dcol>scol)
+				{
+					for(int j=scol+1;j<dcol;j++)
+					{
+						if(board[srow][j]==' ')
+						{	
+							checkcol=1;
+						}
+						else
+						{
+							checkcol=0;
+							break;
+						}
+					}
+				}	
+				else
+				{
+					for(int i=scol-1;i>dcol;i--)
+					{
+						if(board[srow][i]==' ' )
+						{
+							checkcol=1;
+						}
+						else
+						{
+							checkcol=0;
+							break;
+						}
+				 	}
+				}
+				if(checkcol==1)
+				{
+					board[drow][dcol]=board[srow][scol];
+					board[srow][scol]=' ';
+				}
+				else
+				{
+					errorMessage();
+					return 1;
+				}
+			}
+			else if((rowDiff==1 && colDiff==1) || (rowDiff==1 && colDiff==0) || (rowDiff==0 && colDiff==1))
+			{
+				if (destCheck(board[srow][scol],board[drow][dcol]))
+				{
+				board[drow][dcol]=board[srow][scol];
+			    board[srow][scol]=' ';
+				}
+				else 
+				{
+				errorMessage();
+				return 1;
+				}
+			}
+			else if( rowDiff>=1 && colDiff>=1 && rowDiff==colDiff)
+			{
+				int rowStep,  colStep;
+				if(srow<drow)
+				{
+					rowStep=1;
+				}
+				else
+				{
+					rowStep=-1;	
+				}
+				if(scol<dcol)
+				{
+					colStep=1;
+				}
+				else
+				{
+					colStep=-1;
+				}
+				int j=scol+colStep, checkDiag=1;
+				for(int i=srow+rowStep;i!=drow;i+=rowStep)
+				{
+				//cout<<i<<", "<<j<<endl;
+					if(board[i][j]==' ')
+					{
+						checkDiag=1;
+					}
+					else
+					{
+						checkDiag=0;
+						break;
+					}
+					j+=colStep;
+				}
+				if(checkDiag==1)
+				{
+					board[drow][dcol]=board[srow][scol];
+					board[srow][scol]=' ';
+				}
+				else
+				{
+					errorMessage();
+					return 1;
+				}
+			}
 			
 		}
 		else
@@ -538,6 +748,7 @@ int move(string moveString)
 	long currentTime=time(0);
 	if(player==1){
 		if(gameType=='R' || gameType=='r'){
+			// chessTimer = initial time
 			player1Seconds -= (currentTime-chessTimer);
 			if(player1Seconds<=0){
 				return 0;
@@ -564,67 +775,6 @@ int move(string moveString)
 	return 1;
 }
 
-int destCheck(char source, char destination)
-{
-	if(destination==' ')
-	{
-		return 1;
-	}
-	int sourceAscii= (int)source;
-	int desAscii = (int)destination;
-	
-	if((sourceAscii>=65 && sourceAscii<=90 && desAscii>=97 && desAscii<=122) ||
-		(desAscii>=65 && desAscii<=90 && sourceAscii>=97 && sourceAscii<=122) )
-		return 1;
-	else
-		return 0;
-	
-}
 
-int moveInput()
-{
-	cout<<"Player "<< player<<" move";
-	if(gameType=='R' || gameType=='r'){
-		cout<<", seconds remaining : ";
-		if(player==1){
-			cout<<player1Seconds;
-		}else
-		{
-			cout<<player2Seconds;
-		}
-	}
 
-	cout<<endl;
-	char moveChars[5];
-	string moveString;
-	cout<<"Enter move or write END to end game : ";
-	gets(moveChars);
-	if(strlen(moveChars)>=3 && strcmp(moveChars,"END")==0)
-	{
-		gameFile.close();
-		return 0;
-	}
-	else if(strlen(moveChars)==5) 
-	{
-		int c=move(moveChars);
-		gameFile<<(moveChars)<<endl;
-	//	printBoard();
-	//	moveInput();
-		return c;	
-	}
-	else
-	{
-		cout<<"invalid Input";
-		getche();
-		//printBoard();
-		//moveInput();
-		return 1;
-		
-	}
-}
-
-void errorMessage(){
-	cout<<"Invalid Move, press any key to continue..."<<endl;
-	getche();
-}
 
