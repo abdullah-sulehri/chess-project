@@ -35,6 +35,7 @@ void startGame(){
 //	cin>>gameType;
 	cout<<"Enter N for new game and L to load existing game : ";
 	cin>>game;
+	cout<<endl;
 	if(game=='N'){
 		gameFile.open("chess-game.txt",ios::out);
 		initialize();
@@ -45,6 +46,12 @@ void startGame(){
 		initialize();
 		loadGame();
 		moveInput();
+	}
+	else 
+	{
+		cout<<"Please enter a Valid character "<<endl;
+		startGame();
+		
 	}
 }
 void loadGame(){
@@ -69,7 +76,7 @@ void loadGame(){
 void initialize(){
 	board[0][0]='r';
 	board[0][1]='n';
-	board[0][2]='b';
+	board[0][2]='b'; //for testing putting spaces in b q 
 	board[0][3]='q';
 	board[0][4]='k';
 	board[0][5]='b';
@@ -91,7 +98,7 @@ void initialize(){
 	}
 	board[7][0]='R';
 	board[7][1]='N';
-	board[7][2]='B';
+	board[7][2]='B'; //for testing putting spaces at B Q 
 	board[7][3]='Q';
 	board[7][4]='K';
 	board[7][5]='B';
@@ -214,12 +221,13 @@ void move(string moveString)
 	//Pawn Move
 		if(((board[srow][scol]=='P' && drow<srow && player==1) || (board[srow][scol]=='p' && srow<drow && player==2))
 		  &&	destCheck(board[srow][scol],board[drow][dcol]))
-		{
+			{
 				if((srow==6 || srow==1) && rowDiff<=2 && colDiff==0 && board[drow][dcol]==' ')
 				{
 					board[drow][dcol]=board[srow][scol];
 					board[srow][scol]=' ';
-				}else if(rowDiff==1 && colDiff==0 && board[drow][dcol]==' ')
+				}
+				else if(rowDiff==1 && colDiff==0 && board[drow][dcol]==' ')
 				{
 					board[drow][dcol]=board[srow][scol];
 					board[srow][scol]=' ';
@@ -229,65 +237,65 @@ void move(string moveString)
 					board[drow][dcol]=board[srow][scol];
 					board[srow][scol]=' ';
 				
-				}else
+				}
+				else
 				{
 					cout<<"Invalid Move "; getche();
 					return;	
 				}	//Pawn Promotion		
 				if(player==1)
 				{
-				for(int i=0;i<8;i++)
-				{
-					if(board[0][i]=='P')
+					for(int i=0;i<8;i++)
 					{
-						cout<<"PAWN PROMOTION "<<endl;
-						cout<<"Enter Q to make Queen "<<endl;
-						cout<<"Enter K to make king "<<endl;
-						cout<<"Enter R to make Rook "<<endl;
-						cout<<"Enter N to make Knight "<<endl;
-						char ch;
-						cin>>ch;
-						if (ch=='Q' || ch=='K'|| ch=='N' || ch=='R')
+						if(board[0][i]=='P')
 						{
-							board[0][i]=ch;
-							break;
-						}
-						else
-						{
-							cout<<"Please Enter the Correct character ";
-							i--;
+							cout<<"PAWN PROMOTION "<<endl;
+							cout<<"Enter Q to make Queen "<<endl;
+							cout<<"Enter K to make king "<<endl;
+							cout<<"Enter R to make Rook "<<endl;
+							cout<<"Enter N to make Knight "<<endl;
+							char ch;
+							cin>>ch;
+							if (ch=='Q' || ch=='K'|| ch=='N' || ch=='R')
+							{
+								board[0][i]=ch;
+								break;
+							}
+							else
+							{
+								cout<<"Please Enter the Correct character ";
+								i--;
+							}
 						}
 					}
 				}
-			}
 				if(player==2)
 				{
 					for(int i=0;i<8;i++)
-				{
-					if(board[7][i]=='p')
 					{
-						cout<<"PAWN PROMOTION "<<endl;
-						cout<<"Enter q to make Queen "<<endl;
-						cout<<"Enter k to make king "<<endl;
-						cout<<"Enter r to make Rook "<<endl;
-						cout<<"Enter n to make Knight "<<endl;
-						char ch;
-						cin>> ch;
-						if (ch=='q' || ch=='k'|| ch=='n' || ch=='r')
+						if(board[7][i]=='p')
 						{
-							board[7][i]=ch;
-							break;
-						}
-						else{
-							cout<<"Please Enter The Correct Character ";
-							i--;
-						}
+							cout<<"PAWN PROMOTION "<<endl;
+							cout<<"Enter q to make Queen "<<endl;
+							cout<<"Enter k to make king "<<endl;
+							cout<<"Enter r to make Rook "<<endl;
+							cout<<"Enter n to make Knight "<<endl;
+							char ch;
+							cin>> ch;
+							if (ch=='q' || ch=='k'|| ch=='n' || ch=='r')
+							{
+								board[7][i]=ch;
+								break;
+							}
+							else
+							{
+								cout<<"Please Enter The Correct Character ";
+								i--;
+							}
 						
+						}
 					}
-				}
-			}
-					
-				
+				}	
 			} 
 		//Knight move
 	    else if( (board[srow][scol]=='N'  && player==1 || board[srow][scol]=='n'  && player==2)
@@ -305,6 +313,7 @@ void move(string moveString)
 				return;
 			}
 		}
+		//Rook Move
 	    else if ( (board[srow][scol]=='R' && player==1 || board[srow][scol]=='r' && player==2)
 	    	&&	destCheck(board[srow][scol],board[drow][dcol]))
 		{
@@ -381,129 +390,91 @@ void move(string moveString)
 		//king move
 		else if ((board[srow][scol]=='K' && player==1 || board[srow][scol]=='k' && player==2) &&	destCheck(board[srow][scol],board[drow][dcol]))
 		{
-			int qcastle=0;
-			int kcastle=0;
-			//if(rowDiff==1||colDiff==1)
-			//{
-			//	if (board[drow][dcol]==' ' && board[7][])
-			//	{
-			//		board[drow][dcol]=board[srow][scol];
-			//	    board[srow][scol]=' ';
-			//	}
-			
-			//castling Player 1
-			if(player==1){
-			
-			 if (colDiff==2 && srow==7 && dcol==2 && board[srow][0]=='R')
+			if(player==1)
+			{
+			if(rowDiff>1 || colDiff>1)
+			{
+					
+			 if (colDiff==2 && drow==7 && dcol==2 && board[srow][0]=='R' && board[7][1]==' ' && board[7][2]==' ' && board[7][3]==' ')
 			 {
-			 	for(int i=1;i<scol;i++)
-			 	{
-			 		if(board[srow][i]==' ')
-			 		{
-			 			qcastle=1;
-					 }
-					 else
-					 {
-					 	qcastle=0;
-					 	break;
-					 }
-				
-				 }
-			 }
-			 else if(colDiff==1 && srow==7 && dcol==6 && board[srow][7]=='R')
-			 {
-			 	for(int i=scol+1;i<7;i++)
-			 	{
-			 		if(board[srow][i]==' ')
-			 		{
-			 			kcastle=1;
-					 }
-					 else{
-					 	kcastle=0;
-					 	break;
-					 }
-				 } 
-			 }
-			  if (qcastle==1)
-			 {
-			 	board[drow][dcol]=board[srow][scol];
-			 	board[drow][scol-1]=board[drow][0];
+				board[drow][dcol]=board[srow][scol];
+			 	board[drow][3]=board[drow][0];
 			 	board[srow][scol]=' ';
 			 	board[drow][0]=' ';
 			 }
-			 else if(kcastle==1)
+			 else if(colDiff==2 && drow==7 && dcol==6 && board[drow][7]=='R' && board[drow][6]==' ' && board[drow][5]==' ' )
 			 {
 			 	board[drow][dcol]=board[srow][scol];
-			 	board[drow][scol+1]=board[drow][7];
+			 	board[drow][5]=board[drow][7];
 			 	board[srow][scol]=' ';
 			 	board[drow][7]=' ';
 			 }
-			 else if(rowDiff==1||colDiff==1)
+			 	else 
+				{
+				cout<<"Invalid Move ";
+				getche();
+				return;	
+				}
+		}
+			 else if((rowDiff==1 && colDiff==1) || (rowDiff==1 && colDiff==0) || (rowDiff==0 && colDiff==1))
 			{
-				if (board[drow][dcol]==' ')
-			{
+				if (destCheck(board[srow][scol],board[drow][dcol]))
+				{
 				board[drow][dcol]=board[srow][scol];
 			    board[srow][scol]=' ';
+				}
+				else 
+				{
+				cout<<"Invalid Move ";
+				getche();
+				return;	
 				}
 			}
 		}
 			 //castling player 2
-			 if(player==2)
+			 else if(player==2)
 			 {
-			 if (colDiff==2 && srow==0 && dcol==2 && board[srow][0]=='r')
-			 {
-			 	for(int i=1;i<scol;i++)
+			 	if (colDiff>1 || rowDiff>1)
 			 	{
-			 		if(board[srow][i]==' ')
+				
+			 		if (colDiff==2 && drow==0 && dcol==2 && board[drow][0]=='r' && board[0][1]==' ' && board[0][2]==' ' && board[0][3]==' ')
 			 		{
-			 			qcastle=1;
-					 }
-					 else{
-					 	qcastle=0;
-					 	break;
-					 }
-				 }
-			 }
-			 else if(colDiff=1 && srow==0 && dcol==6 && board[srow][7]=='r')
-			 {
-			 	for(int i=scol+1;i<dcol;i++)
-			 	{
-			 		if(board[srow][i]==' ')
+			 			board[drow][dcol]=board[srow][scol];
+			 			board[drow][3]=board[drow][0];
+			 			board[srow][scol]=' ';
+			 			board[drow][0]=' ';
+			 		}
+			 		else if(colDiff==2 && drow==0 && dcol==6 && board[drow][7]=='r' && board[drow][6]==' ' && board[drow][5]==' ' )
 			 		{
-			 			kcastle=1;
-					 }
-					 else{
-					 	kcastle=0;
-					 	break;
-					 }
-				 }
-				 
-			 }
-			  if (qcastle==1)
-			 {
-			 	board[drow][dcol]=board[srow][scol];
-			 	board[drow][scol-1]=board[drow][0];
-			 	board[srow][scol]=' ';
-			 	board[drow][0]=' ';
-			 }
-			 else if(kcastle==1)
-			 {
-			 	board[drow][dcol]=board[srow][scol];
-			 	board[drow][scol+1]=board[drow][7];
-			 	board[srow][scol]=' ';
-			 	board[drow][7]=' ';
-			 }
-			 else if(rowDiff==1||colDiff==1)
-			{
-				if (board[drow][dcol]==' ')
-			{
-				board[drow][dcol]=board[srow][scol];
-			    board[srow][scol]=' ';
+			 			board[drow][dcol]=board[srow][scol];
+			 			board[drow][5]=board[drow][7];
+			 			board[srow][scol]=' ';
+			 			board[drow][7]=' ';
+			 		}
+			 			else 
+				{
+				cout<<"Invalid Move ";
+				getche();
+				return;	
+				}
+			 	}
+			 	else if((rowDiff==1 && colDiff==1) || (rowDiff==1 && colDiff==0) || (rowDiff==0 && colDiff==1))
+				{
+					if (destCheck(board[srow][scol],board[drow][dcol]))
+					{
+						board[drow][dcol]=board[srow][scol];
+			    		board[srow][scol]=' ';
+					}
+					else 
+					{
+						cout<<"Invalid Move ";
+						getche();
+						return;	
+					}
 				}
 			}
 		}
-			
-		}
+	
 	//	else if ((board[srow][scol]=='B' && player==1 || board[srow][scol]=='b') 
 	//	&& destCheck(board[srow][scol],board[drow][dcol]))
 	//	{
@@ -534,8 +505,10 @@ void move(string moveString)
 
 }
 
-int destCheck(char source, char destination){
-	if(destination==' '){
+int destCheck(char source, char destination)
+{
+	if(destination==' ')
+	{
 		return 1;
 	}
 	int sourceAscii= (int)source;
@@ -549,22 +522,27 @@ int destCheck(char source, char destination){
 	
 }
 
-void moveInput(){
+void moveInput()
+{
 	cout<<"Player "<< player<<" move"<<endl;
 	char moveChars[5];
 	string moveString;
 	cout<<"Enter move or write END to end game : ";
 	gets(moveChars);
-	if(strlen(moveChars)>=3 && strcmp(moveChars,"END")==0){
+	if(strlen(moveChars)>=3 && strcmp(moveChars,"END")==0)
+	{
 		gameFile.close();
 		return;
 	}
-	else if(strlen(moveChars)==5) {
+	else if(strlen(moveChars)==5) 
+	{
 		move(moveChars);
 		gameFile<<(moveChars)<<endl;
 		printBoard();
 		moveInput();
-	}else{
+	}
+	else
+	{
 		cout<<"invalid Input";
 		getche();
 		printBoard();
