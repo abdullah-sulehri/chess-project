@@ -11,49 +11,54 @@ void initialize();
 void rowAddress();
 void columnAddress();
 void printBoard();
-void move(string);
+int move(string);
 int destCheck(char, char);
 void startGame();
 void loadGame();
 int player=1;
-void moveInput();
+int moveInput();
 fstream gameFile;
 char gameType;
-int validInput(char[]);
 void errorMessage();
-int player1Minutes=10;
-int player2Minutes=10;
+int player1Seconds=30;
+int player2Seconds=10*60;
+long chessTimer=0;
 int main()
 {
-	//initialize();
-	//displayBoard();
-	startGame();
-	
-}
-void startGame(){
 	char game;
-//	cout<<"Enter Game type : ";
-//	cin>>gameType;
+	cout<<"Enter Game type (C for classic R for rapid): ";
+	cin>>gameType;
 	cout<<"Enter N for new game and L to load existing game : ";
 	cin>>game;
 	cout<<endl;
 	if(game=='N'){
 		gameFile.open("chess-game.txt",ios::out);
+		chessTimer=time(0);
 		initialize();
-		printBoard();
-		moveInput();
+//		printBoard();
+//		moveInput();
+		startGame();
+		
 	}
 	else if (game=='L'){
 		initialize();
 		loadGame();
-		moveInput();
-	}
-	else 
-	{
-		cout<<"Please enter a Valid character "<<endl;
+//		moveInput();
 		startGame();
-		
 	}
+//	else 
+//	{
+//		cout<<"Please enter a Valid character "<<endl;
+//		startGame();
+//	}
+	
+}
+void startGame(){
+	int cont=1;
+	do{
+		printBoard();
+		cont=moveInput();
+	}while(cont==1);
 }
 void loadGame(){
 	string moveString;
@@ -194,7 +199,7 @@ void printBoard(){
 
 }
 
-void move(string moveString)
+int move(string moveString)
 {
 	//cout<<sa<<": "<<da;
 	
@@ -208,7 +213,7 @@ void move(string moveString)
 	if( scol>7 || dcol>7 || scol<0 || dcol<0 || drow<0 || drow>7 || srow<0 || srow>7 ){
 		cout<<"Move is outside the board, select correct move, press any key to continue... ";
 		getche();
-		return;
+		return 1;
 			
 	}
 	int rowDiff;
@@ -242,7 +247,7 @@ void move(string moveString)
 				else
 				{
 					errorMessage();
-					return;	
+					return 1;
 				}	//Pawn Promotion		
 				if(player==1)
 				{
@@ -310,7 +315,7 @@ void move(string moveString)
 			else 
 			{
 				errorMessage();
-				return;
+				return 1;
 			}
 		}
 		//Rook Move
@@ -386,7 +391,7 @@ void move(string moveString)
 			else
 			{
 				errorMessage();
-				return;
+				return 1;
 			}
 			
 		}
@@ -415,7 +420,7 @@ void move(string moveString)
 			 	else 
 				{
 				errorMessage();
-				return;	
+				return 1;
 				}
 		}
 			 else if((rowDiff==1 && colDiff==1) || (rowDiff==1 && colDiff==0) || (rowDiff==0 && colDiff==1))
@@ -428,7 +433,7 @@ void move(string moveString)
 				else 
 				{
 				errorMessage();
-				return;	
+				return 1;
 				}
 			}
 		}
@@ -455,7 +460,7 @@ void move(string moveString)
 			 			else 
 				{
 				errorMessage();
-				return;	
+				return 1;
 				}
 			 	}
 			 	else if((rowDiff==1 && colDiff==1) || (rowDiff==1 && colDiff==0) || (rowDiff==0 && colDiff==1))
@@ -468,7 +473,7 @@ void move(string moveString)
 					else 
 					{
 						errorMessage();
-						return;	
+						return 1;
 					}
 				}
 			}
@@ -479,7 +484,7 @@ void move(string moveString)
 			if(rowDiff!=colDiff)
 			{
 				errorMessage();
-				return;
+				return 1;
 			}
 			int rowStep,  colStep;
 			if(srow<drow)
@@ -520,21 +525,43 @@ void move(string moveString)
 			else
 			{
 				errorMessage();
-				return;
+				return 1;
 			}
 			
 		}
 		else
 		{
 		errorMessage();
-		return;	
+		return 1;
 		}
 	
-	if(player==1)
-		player=2;
-	else
-		player=1;
+	long currentTime=time(0);
+	if(player==1){
+		if(gameType=='R' || gameType=='r'){
+			player1Seconds -= (currentTime-chessTimer);
+			if(player1Seconds<=0){
+				return 0;
+			}
+			player1Seconds+=10;
+			chessTimer=currentTime;
+			
+		}
 
+		player=2;
+	}
+	else{
+		if(gameType=='R' || gameType=='r'){
+			player2Seconds -= (currentTime-chessTimer);
+			if(player2Seconds<=0){
+				return 0;
+			}
+			player2Seconds+=10;
+			chessTimer=currentTime;
+		}
+		player=1;
+	}
+		
+	return 1;
 }
 
 int destCheck(char source, char destination)
@@ -554,9 +581,20 @@ int destCheck(char source, char destination)
 	
 }
 
-void moveInput()
+int moveInput()
 {
-	cout<<"Player "<< player<<" move"<<endl;
+	cout<<"Player "<< player<<" move;
+	if(gameType=='R' || gameType='r'){
+		cout<<", seconds remaining : ";
+		if(player==1){
+			cout<<player1Seconds;
+		}else
+		{
+			cout<<player2Seconds;
+		}
+	}
+
+	cout<<endl;
 	char moveChars[5];
 	string moveString;
 	cout<<"Enter move or write END to end game : ";
@@ -564,21 +602,24 @@ void moveInput()
 	if(strlen(moveChars)>=3 && strcmp(moveChars,"END")==0)
 	{
 		gameFile.close();
-		return;
+		return 1;
 	}
 	else if(strlen(moveChars)==5) 
 	{
-		move(moveChars);
+		int c=move(moveChars);
 		gameFile<<(moveChars)<<endl;
-		printBoard();
-		moveInput();
+	//	printBoard();
+	//	moveInput();
+		return c;	
 	}
 	else
 	{
 		cout<<"invalid Input";
 		getche();
-		printBoard();
-		moveInput();
+		//printBoard();
+		//moveInput();
+		return 1;
+		
 	}
 }
 
