@@ -583,8 +583,8 @@ int destCheck(char source, char destination)
 
 int moveInput()
 {
-	cout<<"Player "<< player<<" move;
-	if(gameType=='R' || gameType='r'){
+	cout<<"Player "<< player<<" move";
+	if(gameType=='R' || gameType=='r'){
 		cout<<", seconds remaining : ";
 		if(player==1){
 			cout<<player1Seconds;
@@ -602,7 +602,7 @@ int moveInput()
 	if(strlen(moveChars)>=3 && strcmp(moveChars,"END")==0)
 	{
 		gameFile.close();
-		return 1;
+		return 0;
 	}
 	else if(strlen(moveChars)==5) 
 	{
