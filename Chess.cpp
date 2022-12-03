@@ -4,6 +4,7 @@
 #include<stdio.h>
 #include<conio.h>
 #include<cmath>
+#include<ctime>
 using namespace std;
 char board[8][8];
 void initialize();
@@ -14,7 +15,6 @@ void move(string);
 int destCheck(char, char);
 void startGame();
 void loadGame();
-void createNewFile();
 int player=1;
 void moveInput();
 fstream gameFile;
@@ -31,12 +31,12 @@ int main()
 }
 void startGame(){
 	char game;
-	cout<<"Enter Game type : ";
-	cin>>gameType;
+//	cout<<"Enter Game type : ";
+//	cin>>gameType;
 	cout<<"Enter N for new game and L to load existing game : ";
 	cin>>game;
 	if(game=='N'){
-		createNewFile();
+		gameFile.open("chess-game.txt",ios::out);
 		initialize();
 		printBoard();
 		moveInput();
@@ -44,7 +44,6 @@ void startGame(){
 	else if (game=='L'){
 		initialize();
 		loadGame();
-		printBoard();
 		moveInput();
 	}
 }
@@ -53,6 +52,8 @@ void loadGame(){
 	gameFile.open("chess-game.txt",ios::in);
 	player=1;
 	char ch=' ';
+	//getline reads one line from gameFile and put it in moveString var
+	//returns 0 if there is no more line to read
 	while (getline (gameFile, moveString)) {
   		move(moveString); 
   		printBoard();
@@ -64,11 +65,7 @@ void loadGame(){
 	gameFile.close();
 	gameFile.open("chess-game.txt",ios::app);
 }
-void createNewFile(){
 
-	gameFile.open("chess-game.txt",ios::out);
-
-}
 void initialize(){
 	board[0][0]='r';
 	board[0][1]='n';
@@ -554,7 +551,6 @@ int destCheck(char source, char destination){
 
 void moveInput(){
 	cout<<"Player "<< player<<" move"<<endl;
-	char saddress[2],daddress[2];
 	char moveChars[5];
 	string moveString;
 	cout<<"Enter move or write END to end game : ";
