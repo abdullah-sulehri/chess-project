@@ -28,6 +28,8 @@ bool checkp1();
 bool checkp2();
 bool checkmate2(char board[8][8]);
 bool checkmate1(char board[8][8]);
+int Qcastle1=0,kcastle1=0;
+int Qcastle2=0,kcastle2=0;
 void errorMessage()
 {
 	cout<<"Invalid Move, press any key to continue..."<<endl;
@@ -51,7 +53,7 @@ int moveInput()
 	string moveString;
 	cout<<"Enter your move or write RES to resign game : ";
 	gets(moveChars);
-	if(strlen(moveChars)>=3 && strcmp(moveChars,"END")==0)
+	if(strlen(moveChars)<=3 && strcmp(moveChars,"RES")==0)
 	{
 		if (player==1){
 			cout<<"Player 1 Resigned"<<endl<<"Player 2 won the game "<<endl;
@@ -132,8 +134,8 @@ void initialize(){
 
 	for (int j=0;j<8;j++)
 	{
-		board[1][j]='p';
-		board[6][j]='P';
+		board[1][j]=' ';
+		board[6][j]=' ';
 	}
 	
 	for(int i=2;i<=5;i++)
@@ -281,6 +283,8 @@ int move(string moveString)
 	int drow= 8 - ((int)moveString.at(4) - 48);
 	//cout<<scol<<", "<<srow<<", "<<dcol<<", "<<drow<<endl;
 	
+	//save destination character
+	
 	if( scol>7 || dcol>7 || scol<0 || dcol<0 || drow<0 || drow>7 || srow<0 || srow>7 )
 	{
 		cout<<"Move is outside the board, select correct move, press any key to continue... ";
@@ -378,7 +382,7 @@ int move(string moveString)
 	    else if( (board[srow][scol]=='N'  && player==1 || board[srow][scol]=='n'  && player==2)
 	    	&&	destCheck(board[srow][scol],board[drow][dcol]))
 		{
-			if (rowDiff==2 && colDiff==1)
+			if ((rowDiff==2 && colDiff==1) ||(colDiff==2 && rowDiff==1))
 			{
 					board[drow][dcol]=board[srow][scol];
 					board[srow][scol]=' ';
@@ -474,19 +478,21 @@ int move(string moveString)
 			if(rowDiff>1 || colDiff>1)
 			{
 					
-			if (colDiff==2 && drow==7 && dcol==2 && board[srow][0]=='R' && board[7][1]==' ' && board[7][2]==' ' && board[7][3]==' ')
+			if (colDiff==2 && drow==7 && dcol==2 && board[srow][0]=='R' && board[7][1]==' ' && board[7][2]==' ' && board[7][3]==' ' && Qcastle1==0)
 			 {
 				board[drow][dcol]=board[srow][scol];
 			 	board[drow][3]=board[drow][0];
 			 	board[srow][scol]=' ';
 			 	board[drow][0]=' ';
+			 	Qcastle1==1;
 			 }
-			 else if(colDiff==2 && drow==7 && dcol==6 && board[drow][7]=='R' && board[drow][6]==' ' && board[drow][5]==' ' )
+			 else if(colDiff==2 && drow==7 && dcol==6 && board[drow][7]=='R' && board[drow][6]==' ' && board[drow][5]==' ' && kcastle1==0)
 			 {
 			 	board[drow][dcol]=board[srow][scol];
 			 	board[drow][5]=board[drow][7];
 			 	board[srow][scol]=' ';
 			 	board[drow][7]=' ';
+			 	kcastle1==1;
 			 }
 			 	else 
 				{
@@ -514,19 +520,21 @@ int move(string moveString)
 			 	if (colDiff>1 || rowDiff>1)
 			 	{
 				
-			 		if (colDiff==2 && drow==0 && dcol==2 && board[drow][0]=='r' && board[0][1]==' ' && board[0][2]==' ' && board[0][3]==' ')
+			 		if (colDiff==2 && drow==0 && dcol==2 && board[drow][0]=='r' && board[0][1]==' ' && board[0][2]==' ' && board[0][3]==' ' && Qcastle2==0)
 			 		{
 			 			board[drow][dcol]=board[srow][scol];
 			 			board[drow][3]=board[drow][0];
 			 			board[srow][scol]=' ';
 			 			board[drow][0]=' ';
+			 			Qcastle2==1;
 			 		}
-			 		else if(colDiff==2 && drow==0 && dcol==6 && board[drow][7]=='r' && board[drow][6]==' ' && board[drow][5]==' ' )
+			 		else if(colDiff==2 && drow==0 && dcol==6 && board[drow][7]=='r' && board[drow][6]==' ' && board[drow][5]==' '  && kcastle2==0)
 			 		{
 			 			board[drow][dcol]=board[srow][scol];
 			 			board[drow][5]=board[drow][7];
 			 			board[srow][scol]=' ';
 			 			board[drow][7]=' ';
+			 			kcastle2==1;
 			 		}
 			 			else 
 				{
@@ -549,7 +557,7 @@ int move(string moveString)
 				}
 			}
 		}
-		else if ((board[srow][scol]=='B' && player==1) || (board[srow][scol]=='b' && player==2) 
+		else if ((board[srow][scol]=='B' && player==1) || (board[srow][scol]=='b' && player==2)
 			&& destCheck(board[srow][scol],board[drow][dcol]))
 		{
 			if(rowDiff!=colDiff)
@@ -601,56 +609,10 @@ int move(string moveString)
 			}
 		}
 		//queen move
-		else if((board[srow][scol]=='Q' && player==1 || board[srow][scol]=='q') && destCheck(board[srow][scol],board[drow][dcol]))
-		{
-				if(rowDiff!=colDiff)
+		else if((board[srow][scol]=='Q' && player==1) || (board[srow][scol]=='q' && player==2)
+			&& destCheck(board[srow][scol],board[drow][dcol]))
 			{
-				errorMessage();
-				return 1;
-			}
-			int rowStep,  colStep;
-			if(srow<drow)
-			{
-				rowStep=1;
-			}
-			else
-			{
-				rowStep=-1;	
-			}
-			if(scol<dcol)
-			{
-				colStep=1;
-			}
-			else
-			{
-				colStep=-1;
-			}
-			int j=scol+colStep, checkDiag=1;
-			
-			for(int i=srow+rowStep;i!=drow;i+=rowStep){
-				//cout<<i<<", "<<j<<endl;
-				if(board[i][j]==' ')
-				{
-					checkDiag=1;
-				}
-				else
-				{
-					checkDiag=0;
-					break;
-				}
-				j+=colStep;
-			}
-			if(checkDiag==1)
-			{
-				board[drow][dcol]=board[srow][scol];
-				board[srow][scol]=' ';
-			}
-			else
-			{
-				errorMessage();
-				return 1;
-			}
-			int checkrow=1,checkcol=1;
+				int checkrow=1,checkcol=1;
 			
 			if(drow>srow){
 		
@@ -715,29 +677,71 @@ int move(string moveString)
 				board[drow][dcol]=board[srow][scol];
 				board[srow][scol]=' ';
 			}
+			//for diagonal 
+		//		if(rowDiff!=colDiff)
+		//	{
+		//		errorMessage();
+		//		return 1;
+		//	}
+			int rowStep,  colStep;
+			if(srow<drow)
+			{
+				rowStep=1;
+			}
 			else
 			{
-				errorMessage();
-				return 1;
+				rowStep=-1;	
 			}
-		}
-		
+			if(scol<dcol)
+			{
+				colStep=1;
+			}
+			else
+			{
+				colStep=-1;
+			}
+			int j=scol+colStep, checkDiag=1;
+			
+			for(int i=srow+rowStep;i!=drow;i+=rowStep){
+				//cout<<i<<", "<<j<<endl;
+				if(board[i][j]==' ')
+				{
+					checkDiag=1;
+				}
+				else
+				{
+					checkDiag=0;
+					break;
+				}
+				j+=colStep;
+			}
+			if(checkDiag==1)
+			{
+				board[drow][dcol]=board[srow][scol];
+				board[srow][scol]=' ';
+			}
+			
+	}
 		else
 		{
 		errorMessage();
 		return 1;
 		}
 	
+	
 	long currentTime=time(0);
 	if(player==1){
 		if(gameType=='R' || gameType=='r'){
-			// chessTimer = initial time
 			player1Seconds -= (currentTime-chessTimer);
 			if(player1Seconds<=0){
 				return 0;
 			}
 			player1Seconds+=10;
 			chessTimer=currentTime;
+			
+			//check if there is check condition
+			//revertMove(source, destination, destinationChar);
+			//return 1;
 			
 		}
 
@@ -775,7 +779,26 @@ bool checkp1()
         {
             if(board[i][j]=='K'&& player==1)
             {
-                
+                 if(board[i+1][j]=='k'||board[i+1][j]=='r'||board[i+1][j]=='q')
+                {
+                    check=1;
+                    return(check); 
+                }
+                if(board[i-1][j]=='k'||board[i-1][j]=='r'||board[i-1][j]=='q')
+                {
+                    check=1;
+                    return(check); 
+                }
+                if(board[i][j+1]=='k'||board[i][j+1]=='r'||board[i][j+1]=='q')
+                {
+                    check=1;
+                    return(check); 
+                }
+                if(board[i][j-1]=='k'||board[i][j-1]=='r'||board[i][j-1]=='q')
+                {
+                    check=1;
+                    return(check); 
+                }
                 if(board[i-1][j-1]=='b'||board[i-1][j-1]=='p'||board[i-1][j-1]=='q'||board[i-1][j-1]=='k')
                 {
                     check=1;
@@ -849,19 +872,42 @@ bool checkp1()
                     if(board[i+k+1][j+k+1]=='b'||board[i+k+1][j+k+1]=='q')
                     {
                         check=1;
+                        return(check);
+                    }
+                }
+                
+                for(int k=1;board[i-k][j-k]==' ';k++)
+                {
+                    if(board[i-k-1][j-k-1]=='b'||board[i-k-1][j-k-1]=='q')
+                    {
+                        check=1;
+                        return(check);
+                    }
+                }
+                
+                for(int k=1;board[i+k][j-k]==' ';k++)
+                {
+                    if(board[i+k+1][j-k-1]=='b'||board[i+k+1][j-k-1]=='q')
+                    {
+                        check=1;
+                        return(check);
+                    }
+                }
+                
+                for(int k=1;board[i-k][j+k]==' ';k++)
+                {
+                    if(board[i-k-1][j+k+1]=='b'||board[i-k-1][j+k+1]=='q')
+                    {
+                        check=1;
+                        return(check);
                     }
                 }
                 
                 
-            }//if
-            else{
-            	cout<<"Player 2 Wins";//end game krani idher
-            	getche();
-            	exit(0);
-        		
-			}
-        }//for
-    }//fn
+            }
+        }
+    }
+    return(check);
 }
 bool checkp2()
 {
@@ -873,6 +919,26 @@ bool checkp2()
         {
             if(board[i][j]=='k'&& player==2)
             {
+            	if(board[i+1][j]=='K'|| board[i+1][j]=='R' || board[i+1][j]=='Q')
+                {
+                    check=1;
+                    return(check); 
+                }
+                if(board[i-1][j]=='K'||board[i-1][j]=='R'||board[i-1][j]=='Q')
+                {
+                    check=1;
+                    return(check); 
+                }
+                if(board[i][j+1]=='K'||board[i][j+1]=='R'||board[i][j+1]=='Q')
+                {
+                    check=1;
+                    return(check); 
+                }
+                if(board[i][j-1]=='K'||board[i][j-1]=='R'||board[i][j-1]=='Q')
+                {
+                    check=1;
+                    return(check); 
+                }
                 
                 if(board[i-1][j-1]=='B' || board[i-1][j-1]=='Q' || board[i-1][j-1]=='K')
                 {
@@ -976,90 +1042,35 @@ bool checkp2()
                     }
                 }
                 
-               } //diagonal end
+               } 
                 
-            }//if
+            }
             
-            else{
-            	cout<<"Player 1 Wins";//end game krani idher
-            	getche();
-            	exit(0);
-        		
-			}
-            
-        }//for input
-    }//for outer
+        }
+    }
     return(check);
-}//fn
-//bool checkmate1(char board[8][8])
+	}
+	
+	
+	//latest
+//	checkmatep1()
 //{
-//    bool checkmateup=0,checkmatedown=0,checkmateleft=0,checkmateright=0,checkmateupright=0,checkmateupleft=0;
-//    bool checkmatedownright=0,checkmatedownleft=0;
-//    bool owncheck=0;
-//    bool checkmate=0;
-//    
-//    for(int i=0;i<8;i++)
-//    {
-//        for(int j=0;j<8;j++)
-//        {
-//            if(board[i][j]=='K'&&player==1)
-//            {
-//                owncheck=checkp1(board[i][j]);
-//                checkmatedown=checkp1(board[i+1][j]);
-//                checkmateup=checkp1(board[i-1][j]);
-//                checkmateright=checkp1(board[i][j+1]);
-//                checkmateleft=checkp1(board[i][j-1]);
-//                checkmatedownright=checkp1(board[i+1][j+1]);
-//                checkmatedownleft=checkp1(board[i+1][j-1]);
-//                checkmateupright=checkp1(board[i-1][j+1]);
-//                checkmateupleft=checkp1(board[i-1][j-1]);
-//            }
-//        }
-//        
-//    }
-//    //Game end krani hai player 2 jeet gya by checkmate
-//    
-//    if(checkmateup==1 && checkmatedown==1 && checkmateleft==1 && checkmateright==1 && checkmateupright==1 &&checkmateupleft==1 &&
-//    checkmatedownright==1 && checkmatedownleft==1)
-//    {
-//        return(1);
-//    }
-//        
-//        return(0);
-//}
-//bool checkmate2(char board[8][8])
-//{
-//    bool checkmateup=0,checkmatedown=0,checkmateleft=0,checkmateright=0,checkmateupright=0,checkmateupleft=0;
-//    bool checkmatedownright=0,checkmatedownleft=0;
-//    bool owncheck=0;
-//    bool checkmate=0;
-//    
-//    for(int i=0;i<8;i++)
-//    {
-//        for(int j=0;j<8;j++)
-//        {
-//            if(board[i][j]=='k'&&player==2)
-//            {
-//                owncheck=checkp2(board[i][j]);
-//                checkmatedown=checkp2(board[i+1][j]);
-//                checkmateup=checkp2(board[i-1][j]);
-//                checkmateright=checkp2(board[i][j+1]);
-//                checkmateleft=checkp2(board[i][j-1]);
-//                checkmatedownright=checkp2(board[i+1][j+1]);
-//                checkmatedownleft=checkp2(board[i+1][j-1]);
-//                checkmateupright=checkp2(board[i-1][j+1]);
-//                checkmateupleft=checkp2(board[i-1][j-1]);
-//            }
-//        }
-//        
-//    }
-//    if(checkmateup==1 && checkmatedown==1 && checkmateleft==1 && checkmateright==1 && checkmateupright==1 &&checkmateupleft==1 &&
-//    checkmatedownright==1 && checkmatedownleft==1)
-//    {
-//        return(1);
-//    }
-//        
-//        return(0);
+//	for(int i=0;i<8;i++)
+//	{
+//		for(int j=0;j<8;j++)
+//		{
+//			if(board[i][j]=='K'&& player==1)
+//			{
+//				bool checkown=0,checkup=0,checkup1=0,checkup2=0,checkdown=0,checkdown1=0,checkdown2=0;
+//				bool checkleft=0,checkleft1=0,checkleft2=0,checkright=0,checkright1=0,checkright2=0;
+////				bool checkupright=0,checkupright1=0,checkupright2=0,checkupleft=0,checkupleft1=0,checkupleft2=0;
+//				bool checkdownright=0,checkdownright1=0,checkdownright2=0,checkdownleft=0,checkdownleft1=0,checkdownleft2=0;
+//				
+//				
+//				checkown=checkp1(board[i][j]);
+//			}
+//		}
+//	}
 //}
 
 
