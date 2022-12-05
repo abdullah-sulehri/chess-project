@@ -876,7 +876,7 @@ bool checkp1()
                     }
                 }
                 
-                for(int k=1;board[i-k][j-k]==' ';k++)
+                for(int k=1;board[i-k][j-k]==' ' && i-k>0 && j-k>0 ;k++)
                 {
                     if(board[i-k-1][j-k-1]=='b'||board[i-k-1][j-k-1]=='q')
                     {
@@ -885,7 +885,7 @@ bool checkp1()
                     }
                 }
                 
-                for(int k=1;board[i+k][j-k]==' ';k++)
+                for(int k=1;board[i+k][j-k]==' ' && i+k<7 && j-k>0 ;k++)
                 {
                     if(board[i+k+1][j-k-1]=='b'||board[i+k+1][j-k-1]=='q')
                     {
@@ -894,7 +894,7 @@ bool checkp1()
                     }
                 }
                 
-                for(int k=1;board[i-k][j+k]==' ';k++)
+                for(int k=1;board[i-k][j+k]==' ' && i-k>0 && j+k<7 ;k++)
                 {
                     if(board[i-k-1][j+k+1]=='b'||board[i-k-1][j+k+1]=='q')
                     {
@@ -917,7 +917,7 @@ bool checkp2()
     {
         for(int j=0;j<8;j++)
         {
-            if(board[i][j]=='k'&& player==2)
+            if(board[i][j]=='k' && player==2)
             {
             	if(board[i+1][j]=='K'|| board[i+1][j]=='R' || board[i+1][j]=='Q')
                 {
@@ -993,6 +993,7 @@ bool checkp2()
                         check=1;
                         return(check);
                     }
+                }
                     for(int k=1;board[i][j-k]==' ';k++)
                 {
                     if(board[i][j-k-1]=='R'||board[i][j-k-1]=='Q')
@@ -1006,35 +1007,39 @@ bool checkp2()
                 
                 //diagonal
                 
-                for(int k=1;board[i+k][j+k]==' ';k++)
+                for(int k=1;board[i+k][j+k]==' ' && i+k<7 && j+k<7 ;k++)
                 {
-                    if(board[i+k+1][j+k+1]=='B'||board[i+k+1][j+k+1]=='Q')
+                	cout<<"i+k, j+k "<<i+k+1<<", "<<j+k+1<<endl;
+                    if(board[i+k+1][j+k+1]=='B' || board[i+k+1][j+k+1]=='Q')
                     {
                         check=1;
                         return(check);
                     }
                 }
                 
-                for(int k=1;board[i-k][j-k]==' ';k++)
+                for(int k=1;board[i-k][j-k]==' ' && i-k>0 && j-k>0 ;k++)
                 {
-                    if(board[i-k-1][j-k-1]=='B'||board[i-k-1][j-k-1]=='Q')
+                	cout<<"i-k, j-k "<<i-k-1<<", "<<j-k-1<<endl;
+                    if(board[i-k-1][j-k-1]=='B' || board[i-k-1][j-k-1]=='Q')
                     {
                         check=1;
                         return(check);
                     }
                 }
                 
-                for(int k=1;board[i+k][j-k]==' ';k++)
+                for(int k=1;board[i+k][j-k]==' ' && i+k<7 && j-k>0;k++)
                 {
-                    if(board[i+k+1][j-k-1]=='B'||board[i+k+1][j-k-1]=='Q')
+                	cout<<"i+k, j-k "<<i+k+1<<", "<<j-k-1<<endl;
+                    if(board[i+k+1][j-k-1]=='B' || board[i+k+1][j-k-1]=='Q')
                     {
                         check=1;
                         return(check);
                     }
                 }
                 
-                for(int k=1;board[i-k][j+k]==' ';k++)
+                for(int k=1;board[i-k][j+k]==' ' && i-k>0 && j+k<7 ;k++)
                 {
+                	cout<<"i-k, j+k "<<i-k-1<<", "<<j+k+1<<endl;
                     if(board[i-k-1][j+k+1]=='B'||board[i-k-1][j+k+1]=='Q')
                     {
                         check=1;
@@ -1042,8 +1047,7 @@ bool checkp2()
                     }
                 }
                 
-               } 
-                
+              
             }
             
         }
