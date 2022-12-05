@@ -28,6 +28,7 @@ bool checkp1();
 bool checkp2();
 bool checkmate2(char board[8][8]);
 bool checkmate1(char board[8][8]);
+void revertMove(int , int , int , int, char );
 int Qcastle1=0,kcastle1=0;
 int Qcastle2=0,kcastle2=0;
 void errorMessage()
@@ -283,7 +284,7 @@ int move(string moveString)
 	int drow= 8 - ((int)moveString.at(4) - 48);
 	//cout<<scol<<", "<<srow<<", "<<dcol<<", "<<drow<<endl;
 	
-	//save destination character
+	char desChar=board[drow][dcol];
 	
 	if( scol>7 || dcol>7 || scol<0 || dcol<0 || drow<0 || drow>7 || srow<0 || srow>7 )
 	{
@@ -738,12 +739,15 @@ int move(string moveString)
 			}
 			player1Seconds+=10;
 			chessTimer=currentTime;
-			
-			//check if there is check condition
-			//revertMove(source, destination, destinationChar);
-			//return 1;
-			
+	
 		}
+		
+		if(checkp1()){
+				cout<<"Player 1 is under check move not allowed "<<endl;
+				getche();
+				revertMove(srow,scol,drow,dcol,desChar);
+				return 1;
+			}
 
 		player=2;
 		if(checkp2()){
@@ -759,7 +763,15 @@ int move(string moveString)
 			}
 			player2Seconds+=10;
 			chessTimer=currentTime;
+		
 		}
+		
+			if(checkp2()){
+				cout<<"Player 2 is under check move not allowed "<<endl;
+				getche();
+				revertMove(srow,scol,drow,dcol,desChar);
+				return 1;
+			}
 		player=1;
 		if(checkp1()){
 			cout<<"check for player 1"<<endl;
@@ -777,7 +789,7 @@ bool checkp1()
     {
         for(int j=0;j<8;j++)
         {
-            if(board[i][j]=='K'&& player==1)
+            if(board[i][j]=='K' && player==1)
             {
                  if(board[i+1][j]=='k'||board[i+1][j]=='r'||board[i+1][j]=='q')
                 {
@@ -867,9 +879,10 @@ bool checkp1()
                 
                 //diagonal
                 
-                for(int k=1;board[i+k][j+k]==' ';k++)
+                for(int k=1;board[i+k][j+k]==' ' && i+k<7 && j+k<7 ;k++)
                 {
-                    if(board[i+k+1][j+k+1]=='b'||board[i+k+1][j+k+1]=='q')
+                	cout<<"i+k, j+k "<<i+k+1<<", "<<j+k+1<<endl; getche();
+                    if(board[i+k+1][j+k+1]=='b' || board[i+k+1][j+k+1]=='q')
                     {
                         check=1;
                         return(check);
@@ -878,16 +891,18 @@ bool checkp1()
                 
                 for(int k=1;board[i-k][j-k]==' ' && i-k>0 && j-k>0 ;k++)
                 {
-                    if(board[i-k-1][j-k-1]=='b'||board[i-k-1][j-k-1]=='q')
+                	cout<<"i-k, j-k "<<i-k-1<<", "<<j-k-1<<endl; getche();
+                    if(board[i-k-1][j-k-1]=='b' || board[i-k-1][j-k-1]=='q')
                     {
                         check=1;
                         return(check);
                     }
                 }
                 
-                for(int k=1;board[i+k][j-k]==' ' && i+k<7 && j-k>0 ;k++)
+                for(int k=1;board[i+k][j-k]==' ' && i+k<7 && j-k>0;k++)
                 {
-                    if(board[i+k+1][j-k-1]=='b'||board[i+k+1][j-k-1]=='q')
+                	cout<<"i+k, j-k "<<i+k+1<<", "<<j-k-1<<endl; getche();
+                    if(board[i+k+1][j-k-1]=='b' || board[i+k+1][j-k-1]=='q')
                     {
                         check=1;
                         return(check);
@@ -896,6 +911,7 @@ bool checkp1()
                 
                 for(int k=1;board[i-k][j+k]==' ' && i-k>0 && j+k<7 ;k++)
                 {
+                	cout<<"i-k, j+k "<<i-k-1<<", "<<j+k+1<<endl; getche();
                     if(board[i-k-1][j+k+1]=='b'||board[i-k-1][j+k+1]=='q')
                     {
                         check=1;
@@ -1009,7 +1025,7 @@ bool checkp2()
                 
                 for(int k=1;board[i+k][j+k]==' ' && i+k<7 && j+k<7 ;k++)
                 {
-                	cout<<"i+k, j+k "<<i+k+1<<", "<<j+k+1<<endl;
+                	cout<<"i+k, j+k "<<i+k+1<<", "<<j+k+1<<endl; getche();
                     if(board[i+k+1][j+k+1]=='B' || board[i+k+1][j+k+1]=='Q')
                     {
                         check=1;
@@ -1019,7 +1035,7 @@ bool checkp2()
                 
                 for(int k=1;board[i-k][j-k]==' ' && i-k>0 && j-k>0 ;k++)
                 {
-                	cout<<"i-k, j-k "<<i-k-1<<", "<<j-k-1<<endl;
+                	cout<<"i-k, j-k "<<i-k-1<<", "<<j-k-1<<endl; getche();
                     if(board[i-k-1][j-k-1]=='B' || board[i-k-1][j-k-1]=='Q')
                     {
                         check=1;
@@ -1029,7 +1045,7 @@ bool checkp2()
                 
                 for(int k=1;board[i+k][j-k]==' ' && i+k<7 && j-k>0;k++)
                 {
-                	cout<<"i+k, j-k "<<i+k+1<<", "<<j-k-1<<endl;
+                	cout<<"i+k, j-k "<<i+k+1<<", "<<j-k-1<<endl;getche();
                     if(board[i+k+1][j-k-1]=='B' || board[i+k+1][j-k-1]=='Q')
                     {
                         check=1;
@@ -1039,7 +1055,7 @@ bool checkp2()
                 
                 for(int k=1;board[i-k][j+k]==' ' && i-k>0 && j+k<7 ;k++)
                 {
-                	cout<<"i-k, j+k "<<i-k-1<<", "<<j+k+1<<endl;
+                	cout<<"i-k, j+k "<<i-k-1<<", "<<j+k+1<<endl; getche();
                     if(board[i-k-1][j+k+1]=='B'||board[i-k-1][j+k+1]=='Q')
                     {
                         check=1;
@@ -1053,6 +1069,12 @@ bool checkp2()
         }
     }
     return(check);
+	}
+	void revertMove(int srow, int scol, int drow, int dcol, char destChar)
+	{
+		board[srow][scol]=board[drow][dcol];
+		board[drow][dcol]=destChar;
+		
 	}
 	
 	
