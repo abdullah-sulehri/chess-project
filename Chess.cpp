@@ -55,7 +55,7 @@ int moveInput()
 	cout<<endl;
 	char moveChars[5];
 	string moveString;
-	cout<<"Enter your move or write RES to resign game : ";
+	cout<<"Enter your move, write RES to resign game or S to save game: ";
 	gets(moveChars);
 	if(moveChars[0]=='\0'){
 		gets(moveChars);
@@ -78,6 +78,9 @@ int moveInput()
 		int c=move(moveChars);
 		gameFile<<(moveChars)<<endl;
 		return c;	
+	}
+	else if(strlen(moveChars)==1 && moveChars[0]=='S'){
+		return 0;
 	}
 	else
 	{
