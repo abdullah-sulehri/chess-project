@@ -24,8 +24,8 @@ void errorMessage();
 int player1Seconds=10*60;
 int player2Seconds=10*60;
 long chessTimer=0;
-bool checkp1(int,int);
-bool checkp2(int,int);
+bool checkp1();
+bool checkp2();
 bool checkmate2(char board[8][8]);
 bool checkmate1(char board[8][8]);
 void revertMove(int , int , int , int, char );
@@ -98,8 +98,22 @@ int destCheck(char source, char destination)
 int main()
 {
 	char game;
+	for(int i=0;i<=0;i++)
+	{
+	
 	cout<<"Enter Game type (C for classic R for rapid): ";
 	cin>>gameType;
+	if (gameType=='C' || gameType=='c' || gameType=='R' || gameType=='r')
+	{
+		break;
+	}
+	else
+	{
+		cout<<"Invalid Input ";
+		getche();
+		i--;
+	}
+}
 	cout<<"Enter N for new game and L to load existing game : ";
 	cin>>game;
 	cout<<endl;
@@ -125,12 +139,12 @@ int main()
 }
 void initialize(){
 	board[0][0]='r';
-	board[0][1]=' ';
-	board[0][2]=' '; //for testing putting spaces in b q 
-	board[0][3]=' ';
+	board[0][1]='n';
+	board[0][2]='b'; //for testing putting spaces in b q 
+	board[0][3]='q';
 	board[0][4]='k';
-	board[0][5]=' ';
-	board[0][6]=' ';
+	board[0][5]='b';
+	board[0][6]='n';
 	board[0][7]='r';
 
 	for (int j=0;j<8;j++)
@@ -147,12 +161,12 @@ void initialize(){
 		}
 	}
 	board[7][0]='R';
-	board[7][1]=' ';
-	board[7][2]=' '; //for testing putting spaces at B Q 
-	board[7][3]=' ';
+	board[7][1]='N';
+	board[7][2]='B'; //for testing putting spaces at B Q 
+	board[7][3]='Q';
 	board[7][4]='K';
-	board[7][5]=' ';
-	board[7][6]=' ';
+	board[7][5]='B';
+	board[7][6]='N';
 	board[7][7]='R';
 	}
 void loadGame(){
@@ -692,17 +706,7 @@ int move(string moveString)
 					}
 				}
 			}
-		//	if(checkrow==1 && checkcol==1)
-		//	{
-		//		board[drow][dcol]=board[srow][scol];
-		//		board[srow][scol]=' ';
-		//	}
-			//for diagonal 
-		//		if(rowDiff!=colDiff)
-		//	{
-		//		errorMessage();
-		//		return 1;
-		//	}
+	
 			int rowStep,  colStep;
 			if(srow<drow)
 			{
@@ -747,7 +751,7 @@ int move(string moveString)
 		errorMessage();
 		return 1;
 		}
-	
+	 ///Time and turns 
 	
 	long currentTime=time(0);
 	if(player==1){
@@ -761,7 +765,7 @@ int move(string moveString)
 	
 		}
 		
-		if(checkp1(srow,scol)){
+		if(checkp1()){
 				cout<<"Player 1 is under check move not allowed "<<endl;
 				getche();
 				revertMove(srow,scol,drow,dcol,desChar);
@@ -769,7 +773,7 @@ int move(string moveString)
 			}
 
 		player=2;
-		if(checkp2(srow,scol)){
+		if(checkp2()){
 			cout<<"Check for player 2"<<endl;
 			getche();
 		}
@@ -785,14 +789,14 @@ int move(string moveString)
 		
 		}
 		
-			if(checkp2(srow,scol)){
+			if(checkp2()){
 				cout<<"Player 2 is under check move not allowed "<<endl;
 				getche();
 				revertMove(srow,scol,drow,dcol,desChar);
 				return 1;
 			}
 		player=1;
-		if(checkp1(srow,scol)){
+		if(checkp1()){
 			cout<<"check for player 1"<<endl;
 			getche();
 		}
@@ -800,7 +804,7 @@ int move(string moveString)
 		
 	return 1;
 }
-bool checkp1(int srow, int scol)
+bool checkp1()
 {
     bool check=0;
     
@@ -944,13 +948,9 @@ bool checkp1(int srow, int scol)
     }
     return(check);
 }
-bool checkp2(int srow, int scol)
+bool checkp2()
 {
     bool check=0;
-    if(board[srow][scol]=='k')
-    {
-    	return (check);
-	}
     
     for(int i=0;i<8;i++)
     {
