@@ -21,11 +21,11 @@ int moveInput();
 fstream gameFile;
 char gameType;
 void errorMessage();
-int player1Seconds=30;
+int player1Seconds=10*60;
 int player2Seconds=10*60;
 long chessTimer=0;
-bool checkp1();
-bool checkp2();
+bool checkp1(int,int);
+bool checkp2(int,int);
 bool checkmate2(char board[8][8]);
 bool checkmate1(char board[8][8]);
 void revertMove(int , int , int , int, char );
@@ -125,12 +125,12 @@ int main()
 }
 void initialize(){
 	board[0][0]='r';
-	board[0][1]='n';
-	board[0][2]='b'; //for testing putting spaces in b q 
-	board[0][3]='q';
+	board[0][1]=' ';
+	board[0][2]=' '; //for testing putting spaces in b q 
+	board[0][3]=' ';
 	board[0][4]='k';
-	board[0][5]='b';
-	board[0][6]='n';
+	board[0][5]=' ';
+	board[0][6]=' ';
 	board[0][7]='r';
 
 	for (int j=0;j<8;j++)
@@ -147,12 +147,12 @@ void initialize(){
 		}
 	}
 	board[7][0]='R';
-	board[7][1]='N';
-	board[7][2]='B'; //for testing putting spaces at B Q 
-	board[7][3]='Q';
+	board[7][1]=' ';
+	board[7][2]=' '; //for testing putting spaces at B Q 
+	board[7][3]=' ';
 	board[7][4]='K';
-	board[7][5]='B';
-	board[7][6]='N';
+	board[7][5]=' ';
+	board[7][6]=' ';
 	board[7][7]='R';
 	}
 void loadGame(){
@@ -459,10 +459,26 @@ int move(string moveString)
 					}
 				}
 			}
-			if(checkrow==1 && checkcol==1)
+			if(checkrow==1 && checkcol==1) 
 			{
 				board[drow][dcol]=board[srow][scol];
 				board[srow][scol]=' ';
+				if(srow==7 && scol==0)
+				{
+					Qcastle1=1;
+				}
+				if(srow==0 && scol==0 )
+				{
+					Qcastle2=1;
+				}
+				if(srow==7 && scol==7)
+				{
+					kcastle1=1;
+				}
+				if(srow==0 && scol==7)
+				{
+					kcastle2=1;
+				}
 			}
 			else
 			{
@@ -507,6 +523,7 @@ int move(string moveString)
 				{
 				board[drow][dcol]=board[srow][scol];
 			    board[srow][scol]=' ';
+			    kcastle1=1,Qcastle1=1;
 				}
 				else 
 				{
@@ -549,6 +566,7 @@ int move(string moveString)
 					{
 						board[drow][dcol]=board[srow][scol];
 			    		board[srow][scol]=' ';
+			    		Qcastle2=1,kcastle2=1;
 					}
 					else 
 					{
@@ -613,6 +631,7 @@ int move(string moveString)
 		else if((board[srow][scol]=='Q' && player==1) || (board[srow][scol]=='q' && player==2)
 			&& destCheck(board[srow][scol],board[drow][dcol]))
 			{
+				
 				int checkrow=1,checkcol=1;
 			
 			if(drow>srow){
@@ -673,11 +692,11 @@ int move(string moveString)
 					}
 				}
 			}
-			if(checkrow==1 && checkcol==1)
-			{
-				board[drow][dcol]=board[srow][scol];
-				board[srow][scol]=' ';
-			}
+		//	if(checkrow==1 && checkcol==1)
+		//	{
+		//		board[drow][dcol]=board[srow][scol];
+		//		board[srow][scol]=' ';
+		//	}
 			//for diagonal 
 		//		if(rowDiff!=colDiff)
 		//	{
@@ -716,7 +735,7 @@ int move(string moveString)
 				}
 				j+=colStep;
 			}
-			if(checkDiag==1)
+			if((checkDiag==1 ) || (checkrow==1 && checkcol==1))
 			{
 				board[drow][dcol]=board[srow][scol];
 				board[srow][scol]=' ';
@@ -742,7 +761,7 @@ int move(string moveString)
 	
 		}
 		
-		if(checkp1()){
+		if(checkp1(srow,scol)){
 				cout<<"Player 1 is under check move not allowed "<<endl;
 				getche();
 				revertMove(srow,scol,drow,dcol,desChar);
@@ -750,7 +769,7 @@ int move(string moveString)
 			}
 
 		player=2;
-		if(checkp2()){
+		if(checkp2(srow,scol)){
 			cout<<"Check for player 2"<<endl;
 			getche();
 		}
@@ -766,14 +785,14 @@ int move(string moveString)
 		
 		}
 		
-			if(checkp2()){
+			if(checkp2(srow,scol)){
 				cout<<"Player 2 is under check move not allowed "<<endl;
 				getche();
 				revertMove(srow,scol,drow,dcol,desChar);
 				return 1;
 			}
 		player=1;
-		if(checkp1()){
+		if(checkp1(srow,scol)){
 			cout<<"check for player 1"<<endl;
 			getche();
 		}
@@ -781,7 +800,7 @@ int move(string moveString)
 		
 	return 1;
 }
-bool checkp1()
+bool checkp1(int srow, int scol)
 {
     bool check=0;
     
@@ -881,7 +900,7 @@ bool checkp1()
                 
                 for(int k=1;board[i+k][j+k]==' ' && i+k<7 && j+k<7 ;k++)
                 {
-                	cout<<"i+k, j+k "<<i+k+1<<", "<<j+k+1<<endl; getche();
+                	//cout<<"i+k, j+k "<<i+k+1<<", "<<j+k+1<<endl; getche();
                     if(board[i+k+1][j+k+1]=='b' || board[i+k+1][j+k+1]=='q')
                     {
                         check=1;
@@ -891,7 +910,7 @@ bool checkp1()
                 
                 for(int k=1;board[i-k][j-k]==' ' && i-k>0 && j-k>0 ;k++)
                 {
-                	cout<<"i-k, j-k "<<i-k-1<<", "<<j-k-1<<endl; getche();
+                	//cout<<"i-k, j-k "<<i-k-1<<", "<<j-k-1<<endl; getche();
                     if(board[i-k-1][j-k-1]=='b' || board[i-k-1][j-k-1]=='q')
                     {
                         check=1;
@@ -901,7 +920,7 @@ bool checkp1()
                 
                 for(int k=1;board[i+k][j-k]==' ' && i+k<7 && j-k>0;k++)
                 {
-                	cout<<"i+k, j-k "<<i+k+1<<", "<<j-k-1<<endl; getche();
+                	//cout<<"i+k, j-k "<<i+k+1<<", "<<j-k-1<<endl; getche();
                     if(board[i+k+1][j-k-1]=='b' || board[i+k+1][j-k-1]=='q')
                     {
                         check=1;
@@ -911,7 +930,7 @@ bool checkp1()
                 
                 for(int k=1;board[i-k][j+k]==' ' && i-k>0 && j+k<7 ;k++)
                 {
-                	cout<<"i-k, j+k "<<i-k-1<<", "<<j+k+1<<endl; getche();
+                	//cout<<"i-k, j+k "<<i-k-1<<", "<<j+k+1<<endl; getche();
                     if(board[i-k-1][j+k+1]=='b'||board[i-k-1][j+k+1]=='q')
                     {
                         check=1;
@@ -925,9 +944,13 @@ bool checkp1()
     }
     return(check);
 }
-bool checkp2()
+bool checkp2(int srow, int scol)
 {
     bool check=0;
+    if(board[srow][scol]=='k')
+    {
+    	return (check);
+	}
     
     for(int i=0;i<8;i++)
     {
