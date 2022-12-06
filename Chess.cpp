@@ -26,7 +26,6 @@ int player2Seconds=10*60;
 long chessTimer=0;
 bool checkp1();
 bool checkp2();
-int checkmatep2();
 int checkmateplayer2();
 int checkmateplayer1();
 void revertMove(int , int , int , int, char );
@@ -146,7 +145,7 @@ void initialize()
 {
 	board[0][0]='r';
 	board[0][1]='n';
-	board[0][2]='b'; //for testing putting spaces in b q 
+	board[0][2]='b'; 
 	board[0][3]='q';
 	board[0][4]='k';
 	board[0][5]='b';
@@ -155,8 +154,8 @@ void initialize()
 
 	for (int j=0;j<8;j++)
 	{
-		board[1][j]=' ';
-		board[6][j]=' ';
+		board[1][j]='p';
+		board[6][j]='P';
 	}
 	
 	for(int i=2;i<=5;i++)
@@ -168,7 +167,7 @@ void initialize()
 	}
 	board[7][0]='R';
 	board[7][1]='N';
-	board[7][2]='B'; //for testing putting spaces at B Q 
+	board[7][2]='B'; 
 	board[7][3]='Q';
 	board[7][4]='K';
 	board[7][5]='B';
@@ -620,7 +619,6 @@ int move(string moveString)
 			int j=scol+colStep, checkDiag=1;
 			
 			for(int i=srow+rowStep;i!=drow;i+=rowStep){
-				//cout<<i<<", "<<j<<endl;
 				if(board[i][j]==' ')
 				{
 					checkDiag=1;
@@ -729,7 +727,6 @@ int move(string moveString)
 			int j=scol+colStep, checkDiag=1;
 			
 			for(int i=srow+rowStep;i!=drow;i+=rowStep){
-				//cout<<i<<", "<<j<<endl;
 				if(board[i][j]==' ')
 				{
 					checkDiag=1;
@@ -763,6 +760,7 @@ int move(string moveString)
 			player1Seconds -= (currentTime-chessTimer);
 			if(player1Seconds<=0)
 			{
+				cout<<" Player 1 ran out of time....Player 2 won "<<endl;
 				return 0;
 			}
 			player1Seconds+=10;
@@ -796,6 +794,7 @@ int move(string moveString)
 			player2Seconds -= (currentTime-chessTimer);
 			if(player2Seconds<=0)
 			{
+				cout<<"Player 2 ran out of time...Player 1 won "<<endl;
 				return 0;
 			}
 			player2Seconds+=10;
@@ -924,7 +923,6 @@ bool checkp1()
                 
                 for(int k=1;board[i+k][j+k]==' ' && i+k<7 && j+k<7 ;k++)
                 {
-                	//cout<<"i+k, j+k "<<i+k+1<<", "<<j+k+1<<endl; getche();
                     if(board[i+k+1][j+k+1]=='b' || board[i+k+1][j+k+1]=='q')
                     {
                         check=1;
@@ -934,7 +932,6 @@ bool checkp1()
                 
                 for(int k=1;board[i-k][j-k]==' ' && i-k>0 && j-k>0 ;k++)
                 {
-                	//cout<<"i-k, j-k "<<i-k-1<<", "<<j-k-1<<endl; getche();
                     if(board[i-k-1][j-k-1]=='b' || board[i-k-1][j-k-1]=='q')
                     {
                         check=1;
@@ -944,7 +941,6 @@ bool checkp1()
                 
                 for(int k=1;board[i+k][j-k]==' ' && i+k<7 && j-k>0;k++)
                 {
-                	//cout<<"i+k, j-k "<<i+k+1<<", "<<j-k-1<<endl; getche();
                     if(board[i+k+1][j-k-1]=='b' || board[i+k+1][j-k-1]=='q')
                     {
                         check=1;
@@ -954,7 +950,6 @@ bool checkp1()
                 
                 for(int k=1;board[i-k][j+k]==' ' && i-k>0 && j+k<7 ;k++)
                 {
-                	//cout<<"i-k, j+k "<<i-k-1<<", "<<j+k+1<<endl; getche();
                     if(board[i-k-1][j+k+1]=='b'||board[i-k-1][j+k+1]=='q')
                     {
                         check=1;
@@ -1118,160 +1113,6 @@ void revertMove(int srow, int scol, int drow, int dcol, char destChar)
 	board[srow][scol]=board[drow][dcol];
 	board[drow][dcol]=destChar;		
 }
-int checkmatep2()
-{
-
-  int checkfrow=0;
-  int checkrcol=0;
-  int checkldiag=0;
-  int checkrdiag=0;
-  int checklcol=0;
-  int checkrbdiag=0;
-  int checklbdiag=0;
-  int checkbrow=0;
-    for(int i=0;i<8;i++)
-    {
-        for(int j=0;j<8;j++)
-        {
-            if(board[i][j]=='k' && player==2 /*&& checkp2()*/)
-            {
-            	board[i+1][j]='k'; //front raw
-            	cout<<"front row"<<endl;
-            	if (board[i+1][j]=='k')
-            	{
-            		if(checkp2())
-            		{
-            		 revertMove(i,j,i+1,j,'k');
-            		 checkfrow=1;
-					}
-					else
-					{
-						revertMove(i,j,i+1,j,'k');
-					}
-				}
-				board[i+1][j+1]='k'; //right diagonal
-				cout<<"right diagonal"<<endl;
-				if (board[i+1][j+1]=='k')
-				{
-					if(checkp2())
-					{
-						revertMove(i,j,i+1,j+1,'k');
-						checkrdiag=1;
-					}
-					else
-            		{
-            			revertMove(i,j,i+1,j+1,'k');
-            		}
-            	}
-            	board[i+1][j-1]='k'; //left diagonal
-            	cout<<"left diagonal"<<endl;
-            	if (board[i+1][j-1]=='k')
-				{
-					if(checkp2())
-					{
-						revertMove(i,j,i+1,j-1,'k');
-						checkldiag=1;
-					}
-					else
-            		{
-            			revertMove(i,j,i+1,j-1,'k');
-            		}
-            	}
-            	//board[i][j-1]='K';//left col
-            	board[i][j-1]='k';//left col
-            	cout<<"left col"<<endl;
-            	if (board[i][j-1]=='k')
-				{
-					if(checkp2())
-					{
-						//revertMove(i,j,i,j+1,'k');
-						revertMove(i,j,i,j-1,'k');
-						checklcol=1;
-					}
-					else
-            		{
-            			//revertMove(i,j,i,j+1,'k');
-            			revertMove(i,j,i,j-1,'k');
-            		}
-            	}
-            	board[i][j+1]='k';//right col
-            	cout<<"right col"<<endl;
-            	if (board[i][j+1]=='k')
-				{
-					if(checkp2())
-					{
-						revertMove(i,j,i,j+1,'k');
-						checkrcol=1;
-					}
-					else
-            		{
-            			revertMove(i,j,i,j+1,'k');
-            		}
-            	}
-            	if (i>0)
-            	{
-            		cout<<"i>0 check"<<endl;
-            		board[i-1][j]='k';// back row
-            		if (board[i-1][j]=='k')
-					{
-						if(checkp2())
-						{
-							revertMove(i,j,i-1,j,'k');
-							checkbrow=1;
-						}
-						else
-            			{
-            				revertMove(i,j,i-1,j,'k');
-            			}
-            		}
-            		board[i-1][j-1]='k';//left back diagonal
-            		cout<<"left back diagonal"<<endl;
-            		if (board[i-1][j-1]=='k')
-					{
-						if(checkp2())
-						{	
-							revertMove(i,j,i-1,j-1,'k');
-							checklbdiag=1;
-						}
-						else
-            			{
-            				revertMove(i,j,i-1,j-1,'k');
-            			}
-            		}
-            		board[i-1][j+1]='k'; //right back diagonal
-            		cout<<"right back diagonal"<<endl;
-            		if (board[i-1][j+1]=='k')
-					{
-						if(checkp2())
-						{
-							revertMove(i,j,i-1,j+1,'k');
-							checkrbdiag=1;
-						}
-						else
-            			{
-            				revertMove(i,j,i-1,j+1,'k');
-            			}
-            		}
-				}
-				else
-				{
-					checkbrow=1;
-					checklbdiag=1;
-					checkrbdiag=1;
-				}
-            }
-		}
-	}
-	if (checkfrow==1 && checkfrow==1 && checklcol==1 && checkrcol==1 && checkldiag==1 && checkrdiag==1 && checkrbdiag==1 && checklbdiag==1)
-	{
-		return 1;
-	}
-	else 
-	{
-		return 0;
-	}
-}
-
 
 int checkmateplayer2()
 {
@@ -1289,7 +1130,7 @@ int checkmateplayer2()
     {
         for(int j=0;j<8;j++)
         {
-            if(board[i][j]=='k' && player==2 /*&& checkp2()*/)
+            if(board[i][j]=='k' && player==2 )
             {
             	
             	if(destCheck('k',board[i+1][j])){
@@ -1326,7 +1167,6 @@ int checkmateplayer2()
 				}
 
             	
-            	//board[i][j-1]='K';//left col
             	if(destCheck('k',board[i][j-1])){
             		temp=board[i][j-1];
                   	board[i][j-1]='k';//left col
@@ -1420,7 +1260,7 @@ int checkmateplayer1()
     {
         for(int j=0;j<8;j++)
         {
-            if(board[i][j]=='K' && player==1 /*&& checkp2()*/)
+            if(board[i][j]=='K' && player==1)
             {
             	
             	if(destCheck('K',board[i-1][j])){
